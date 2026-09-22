@@ -127,7 +127,7 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
               <li>1. Add nodes from the left panel</li>
               <li>2. Connect nodes by dragging edges</li>
               <li>3. Configure each node</li>
-              <li>4. Click "Activate Rule" to start</li>
+              <li>4. Click &quot;Activate Rule&quot; to start</li>
               <li>5. View live data in dashboard</li>
             </ul>
           </div>

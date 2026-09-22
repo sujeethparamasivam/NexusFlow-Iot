@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import ReactFlow, { 
   Node, 
   Edge, 
@@ -15,9 +15,10 @@ import { EnhancedSidebar } from './components/EnhancedSidebar';
 import { EnhancedNodeInspector } from './components/EnhancedNodeInspector';
 import { EnhancedDashboard } from './components/EnhancedDashboard';
 import { useGraphStore } from './store/graphStore';
-import { Save, Play, Square } from 'lucide-react';
+import { Save, Play, Square, Download, Upload } from 'lucide-react';
 import glowingStyles from './styles/glowingEffects';
 import { graphService } from './services/graphService';
+import { validateImportedGraph } from './utils/graphImportExport';
 
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
@@ -28,6 +29,7 @@ function App() {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [isRuleActive, setIsRuleActive] = useState(false);
   const [savedGraphId, setSavedGraphId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { saveGraph } = useGraphStore();
 
   // Inject glowing styles
@@ -177,6 +179,66 @@ function App() {
     }
   };
 
+  const handleExportGraph = () => {
+    const exportedGraph = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      nodes,
+      edges,
+    };
+
+    const blob = new Blob([JSON.stringify(exportedGraph, null, 2)], {
+      type: 'application/json',
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `nexusflow-graph-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    alert('Graph exported successfully.');
+  };
+
+  const handleImportGraph = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    if (!file.name.toLowerCase().endsWith('.json')) {
+      alert('Please select a valid .json graph file.');
+      event.target.value = '';
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const validation = validateImportedGraph(parsed);
+
+      if (!validation.valid) {
+        throw new Error(validation.error);
+      }
+
+      setNodes(validation.nodes);
+      setEdges(validation.edges);
+      setSelectedNode(null);
+      alert('Graph imported successfully.');
+    } catch (error) {
+      alert(
+        error instanceof Error
+          ? `Unable to import graph: ${error.message}`
+          : 'Unable to import graph. Please check the file and try again.'
+      );
+    } finally {
+      event.target.value = '';
+    }
+  };
+
   return (
     <div className="flex w-full h-screen bg-gray-50">
       <EnhancedSidebar onAddNode={handleAddNode} onGenerateMockData={handleGenerateMockData} />
@@ -188,7 +250,28 @@ function App() {
             <h1 className="text-2xl font-bold">NexusFlow</h1>
             <p className="text-sm text-blue-100">Visual IoT Telemetry & Rule Engine</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
+            <button
+              onClick={handleExportGraph}
+              className="px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 font-medium transition-colors flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Export JSON
+            </button>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 font-medium transition-colors flex items-center gap-2"
+            >
+              <Upload className="w-4 h-4" />
+              Import JSON
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              className="hidden"
+              onChange={handleImportGraph}
+            />
             <button
               onClick={handleSaveGraph}
               className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 font-medium transition-colors flex items-center gap-2"

@@ -88,7 +88,36 @@ docker-compose up -d
 
 This will start MongoDB, backend, and frontend containers.
 
-## 📚 API Reference
+## � Graph JSON Import / Export
+
+The frontend includes a local graph serialization flow for saving and reusing canvas designs without sending data to the backend.
+
+### Export a graph
+
+1. Build or edit a graph on the NexusFlow canvas.
+2. Click the `Export JSON` button in the top toolbar.
+3. A `.json` file named like `nexusflow-graph-YYYY-MM-DD.json` will download to your browser.
+
+The export includes the current React Flow node and edge state, including:
+- node IDs and types
+- node positions and labels
+- node configuration/data details
+- edge IDs, source, target and connection metadata
+
+### Import a graph
+
+1. Click `Import JSON` in the top toolbar.
+2. Choose a previously exported NexusFlow graph file.
+3. The canvas will replace the current graph with the imported nodes and edges.
+
+The import checks that the JSON is valid before updating the canvas and shows a friendly error if the file is not a valid NexusFlow graph export.
+
+### Notes
+- This is a frontend-only feature; no backend save is performed during export/import.
+- Existing Save Graph, Activate Rule, Stop Rule, and dashboard behavior remain unchanged.
+- Imported graphs must use supported NexusFlow node types such as datasource, filter, transform, aggregate, and trigger.
+
+## �📚 API Reference
 
 ### Graphs API
 - `GET /api/graphs` - List all graphs
