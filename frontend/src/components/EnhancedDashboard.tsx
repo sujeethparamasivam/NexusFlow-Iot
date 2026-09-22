@@ -160,29 +160,29 @@ export function EnhancedDashboard() {
       </div>
 
       {/* Charts */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+      <div className="bg-white/90 rounded-2xl border border-slate-200 p-4 shadow-lg shadow-slate-200/60 backdrop-blur-sm">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-lg">Live Telemetry</h3>
           <div className="flex gap-2">
             <select
               value={selectedDevice}
               onChange={(e) => setSelectedDevice(e.target.value)}
-              className="px-3 py-1 border border-gray-300 rounded text-sm"
+              className="px-3 py-1 border border-indigo-200 bg-indigo-50/60 text-indigo-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
             >
               <option value="all">All Devices</option>
               <option value="turbine-01">Turbine 01</option>
               <option value="turbine-02">Turbine 02</option>
               <option value="pump-01">Pump 01</option>
             </select>
-            <div className="flex gap-1 border border-gray-300 rounded p-1">
+            <div className="flex gap-1 border border-indigo-100 bg-slate-100 rounded-lg p-1">
               {(['line', 'area', 'bar'] as const).map((type) => (
                 <button
                   key={type}
                   onClick={() => setChartType(type)}
                   className={`px-3 py-1 text-sm rounded capitalize ${
                     chartType === type
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 hover:bg-gray-200'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'bg-transparent text-slate-600 hover:bg-white'
                   }`}
                 >
                   {type}
@@ -204,7 +204,7 @@ export function EnhancedDashboard() {
                 <Line
                   type="monotone"
                   dataKey="value"
-                  stroke="#3b82f6"
+                  stroke="#0f766e"
                   dot={false}
                   isAnimationActive={false}
                 />
@@ -213,8 +213,8 @@ export function EnhancedDashboard() {
                 <Area
                   type="monotone"
                   dataKey="value"
-                  stroke="#3b82f6"
-                  fill="#93c5fd"
+                  stroke="#0f766e"
+                  fill="#99f6e4"
                   dot={false}
                   isAnimationActive={false}
                 />
@@ -222,7 +222,7 @@ export function EnhancedDashboard() {
               {chartType === 'bar' && (
                 <Bar
                   dataKey="value"
-                  fill="#3b82f6"
+                  fill="#14b8a6"
                   isAnimationActive={false}
                 />
               )}
@@ -236,7 +236,7 @@ export function EnhancedDashboard() {
       </div>
 
       {/* Alerts */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+      <div className="bg-white/90 rounded-2xl border border-slate-200 p-4 shadow-lg shadow-slate-200/60 backdrop-blur-sm">
         <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
           <AlertCircle className="w-5 h-5 text-red-600" />
           Recent Alerts
@@ -248,10 +248,10 @@ export function EnhancedDashboard() {
                 key={alert.id}
                 className={`p-3 rounded-lg text-sm border-l-4 ${
                   alert.severity === 'error'
-                    ? 'bg-red-50 border-red-400'
+                    ? 'bg-rose-50 border-rose-400'
                     : alert.severity === 'warning'
-                    ? 'bg-yellow-50 border-yellow-400'
-                    : 'bg-blue-50 border-blue-400'
+                    ? 'bg-amber-50 border-amber-400'
+                    : 'bg-cyan-50 border-cyan-400'
                 }`}
               >
                 <p className="font-medium">{alert.message}</p>
@@ -280,21 +280,21 @@ interface StatCardProps {
 
 function StatCard({ icon, label, value, unit, color }: StatCardProps) {
   const bgColors = {
-    blue: 'bg-blue-50 border-blue-200',
-    green: 'bg-green-50 border-green-200',
-    orange: 'bg-orange-50 border-orange-200',
-    red: 'bg-red-50 border-red-200',
+    blue: 'bg-indigo-50 border-indigo-200',
+    green: 'bg-teal-50 border-teal-200',
+    orange: 'bg-amber-50 border-amber-200',
+    red: 'bg-rose-50 border-rose-200',
   };
 
   const textColors = {
-    blue: 'text-blue-600',
-    green: 'text-green-600',
-    orange: 'text-orange-600',
-    red: 'text-red-600',
+    blue: 'text-indigo-600',
+    green: 'text-teal-600',
+    orange: 'text-amber-600',
+    red: 'text-rose-600',
   };
 
   return (
-    <div className={`${bgColors[color]} border rounded-lg p-3`}>
+    <div className={`${bgColors[color]} border rounded-2xl p-3 shadow-sm`}>
       <div className={`flex items-center justify-between ${textColors[color]}`}>
         {icon}
       </div>
