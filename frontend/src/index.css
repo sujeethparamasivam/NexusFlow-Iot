@@ -45,3 +45,10 @@ code {
 .react-flow__controls-button:hover {
   background: #eef2ff;
 }
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(20, 184, 166, 0.45);
+  outline-offset: 2px;
+}
