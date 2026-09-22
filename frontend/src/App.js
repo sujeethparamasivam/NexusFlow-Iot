@@ -1,14 +1,15 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import ReactFlow, { addEdge, useNodesState, useEdgesState, Background, Controls, MiniMap, } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { EnhancedSidebar } from './components/EnhancedSidebar';
 import { EnhancedNodeInspector } from './components/EnhancedNodeInspector';
 import { EnhancedDashboard } from './components/EnhancedDashboard';
 import { useGraphStore } from './store/graphStore';
-import { Save, Play, Square } from 'lucide-react';
+import { Save, Play, Square, Download, Upload } from 'lucide-react';
 import glowingStyles from './styles/glowingEffects';
 import { graphService } from './services/graphService';
+import { validateImportedGraph } from './utils/graphImportExport';
 const initialNodes = [];
 const initialEdges = [];
 function App() {
@@ -17,6 +18,7 @@ function App() {
     const [selectedNode, setSelectedNode] = useState(null);
     const [isRuleActive, setIsRuleActive] = useState(false);
     const [savedGraphId, setSavedGraphId] = useState(null);
+    const fileInputRef = useRef(null);
     const { saveGraph } = useGraphStore();
     // Inject glowing styles
     useEffect(() => {
@@ -148,14 +150,65 @@ function App() {
             alert(error instanceof Error ? error.message : 'Failed to start backend simulator');
         }
     };
-    return (_jsxs("div", { className: "flex w-full h-screen bg-gray-50", children: [_jsx(EnhancedSidebar, { onAddNode: handleAddNode, onGenerateMockData: handleGenerateMockData }), _jsxs("div", { className: "flex-1 flex flex-col", children: [_jsxs("header", { className: "bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-4 flex justify-between items-center shadow-lg", children: [_jsxs("div", { children: [_jsx("h1", { className: "text-2xl font-bold", children: "NexusFlow" }), _jsx("p", { className: "text-sm text-blue-100", children: "Visual IoT Telemetry & Rule Engine" })] }), _jsxs("div", { className: "flex gap-3", children: [_jsxs("button", { onClick: handleSaveGraph, className: "px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 font-medium transition-colors flex items-center gap-2", children: [_jsx(Save, { className: "w-4 h-4" }), "Save Graph"] }), !isRuleActive ? (_jsxs("button", { onClick: handleActivateRule, className: "px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium transition-colors flex items-center gap-2", children: [_jsx(Play, { className: "w-4 h-4" }), "Activate Rule"] })) : (_jsxs("button", { onClick: handleDeactivateRule, className: "px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium transition-colors flex items-center gap-2", children: [_jsx(Square, { className: "w-4 h-4" }), "Stop Rule"] }))] })] }), _jsxs("div", { className: "flex-1 flex gap-4 p-4 overflow-hidden", children: [_jsx("div", { className: "flex-1 bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm", children: _jsxs(ReactFlow, { nodes: nodes.map((node) => ({
+    const handleExportGraph = () => {
+        const exportedGraph = {
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            nodes,
+            edges,
+        };
+        const blob = new Blob([JSON.stringify(exportedGraph, null, 2)], {
+            type: 'application/json',
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `nexusflow-graph-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        alert('Graph exported successfully.');
+    };
+    const handleImportGraph = async (event) => {
+        const file = event.target.files?.[0];
+        if (!file) {
+            return;
+        }
+        if (!file.name.toLowerCase().endsWith('.json')) {
+            alert('Please select a valid .json graph file.');
+            event.target.value = '';
+            return;
+        }
+        try {
+            const text = await file.text();
+            const parsed = JSON.parse(text);
+            const validation = validateImportedGraph(parsed);
+            if (!validation.valid) {
+                throw new Error(validation.error);
+            }
+            setNodes(validation.nodes);
+            setEdges(validation.edges);
+            setSelectedNode(null);
+            alert('Graph imported successfully.');
+        }
+        catch (error) {
+            alert(error instanceof Error
+                ? `Unable to import graph: ${error.message}`
+                : 'Unable to import graph. Please check the file and try again.');
+        }
+        finally {
+            event.target.value = '';
+        }
+    };
+    return (_jsxs("div", { className: "flex w-full h-screen bg-gray-50", children: [_jsx(EnhancedSidebar, { onAddNode: handleAddNode, onGenerateMockData: handleGenerateMockData }), _jsxs("div", { className: "flex-1 flex flex-col", children: [_jsxs("header", { className: "bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-4 flex justify-between items-center shadow-lg", children: [_jsxs("div", { children: [_jsx("h1", { className: "text-2xl font-bold", children: "NexusFlow" }), _jsx("p", { className: "text-sm text-blue-100", children: "Visual IoT Telemetry & Rule Engine" })] }), _jsxs("div", { className: "flex gap-3 flex-wrap", children: [_jsxs("button", { onClick: handleExportGraph, className: "px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 font-medium transition-colors flex items-center gap-2", children: [_jsx(Download, { className: "w-4 h-4" }), "Export JSON"] }), _jsxs("button", { onClick: () => fileInputRef.current?.click(), className: "px-4 py-2 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 font-medium transition-colors flex items-center gap-2", children: [_jsx(Upload, { className: "w-4 h-4" }), "Import JSON"] }), _jsx("input", { ref: fileInputRef, type: "file", accept: ".json,application/json", className: "hidden", onChange: handleImportGraph }), _jsxs("button", { onClick: handleSaveGraph, className: "px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 font-medium transition-colors flex items-center gap-2", children: [_jsx(Save, { className: "w-4 h-4" }), "Save Graph"] }), !isRuleActive ? (_jsxs("button", { onClick: handleActivateRule, className: "px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium transition-colors flex items-center gap-2", children: [_jsx(Play, { className: "w-4 h-4" }), "Activate Rule"] })) : (_jsxs("button", { onClick: handleDeactivateRule, className: "px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium transition-colors flex items-center gap-2", children: [_jsx(Square, { className: "w-4 h-4" }), "Stop Rule"] }))] })] }), _jsxs("div", { className: "flex-1 flex gap-4 p-4 overflow-auto", children: [_jsx("div", { className: "flex-1 bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm", children: _jsxs(ReactFlow, { nodes: nodes.map((node) => ({
                                         ...node,
                                         className: `${node.type || 'datasource'} ${selectedNode?.id === node.id ? 'active' : ''} ${isRuleActive ? 'processing' : ''}`,
-                                    })), edges: edges, onNodesChange: onNodesChange, onEdgesChange: onEdgesChange, onConnect: onConnect, onNodeClick: (_event, node) => setSelectedNode(node), onPaneClick: () => setSelectedNode(null), children: [_jsx(Background, { color: "#aaa", gap: 16 }), _jsx(Controls, {}), _jsx(MiniMap, {})] }) }), _jsxs("div", { className: "w-96 flex flex-col gap-4 overflow-auto", children: [selectedNode && (_jsx(EnhancedNodeInspector, { node: selectedNode, onUpdate: (updatedNode) => {
-                                            setNodes((nds) => nds.map((n) => (n.id === updatedNode.id ? updatedNode : n)));
-                                        }, onDelete: (nodeId) => {
-                                            setNodes((nds) => nds.filter((n) => n.id !== nodeId));
-                                            setSelectedNode(null);
-                                        } })), _jsx(EnhancedDashboard, {})] })] })] })] }));
+                                    })), edges: edges, onNodesChange: onNodesChange, onEdgesChange: onEdgesChange, onConnect: onConnect, onNodeClick: (_event, node) => setSelectedNode(node), onPaneClick: () => setSelectedNode(null), children: [_jsx(Background, { color: "#aaa", gap: 16 }), _jsx(Controls, {}), _jsx(MiniMap, {})] }) }), _jsxs("div", { className: `${selectedNode ? 'w-1/2 min-w-0' : 'flex-1'} flex gap-4`, children: [selectedNode && (_jsx("div", { className: "flex-1 min-w-0", children: _jsx(EnhancedNodeInspector, { node: selectedNode, onUpdate: (updatedNode) => {
+                                                setNodes((nds) => nds.map((n) => (n.id === updatedNode.id ? updatedNode : n)));
+                                            }, onDelete: (nodeId) => {
+                                                setNodes((nds) => nds.filter((n) => n.id !== nodeId));
+                                                setSelectedNode(null);
+                                            } }) })), _jsx("div", { className: "flex-1 min-w-0", children: _jsx(EnhancedDashboard, {}) })] })] })] })] }));
 }
 export default App;
