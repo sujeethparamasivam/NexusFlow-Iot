@@ -9,6 +9,29 @@ Currently, endpoints are not authenticated. JWT will be added in v1.1.
 
 ---
 
+## Health API
+
+### Check Service Health
+```http
+GET /health
+```
+
+Use this endpoint for container probes and deployment smoke checks. A healthy
+service returns `200 OK` with its current status, version, timestamp, and
+process uptime.
+
+**Response**: 200 OK
+```json
+{
+  "status": "OK",
+  "timestamp": "2026-09-22T10:30:00.000Z",
+  "version": "1.0.0",
+  "uptime": 42.5
+}
+```
+
+---
+
 ## Graphs API
 
 ### List All Graphs
