@@ -66,13 +66,13 @@ export function EnhancedNodeInspector({ node, onUpdate, onDelete }: EnhancedNode
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
+    <div className="bg-white/95 rounded-2xl border border-indigo-100 p-8 shadow-lg shadow-indigo-100/60">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-2xl flex items-center gap-3">
-          <Settings className="w-6 h-6 text-blue-600" />
+          <Settings className="w-6 h-6 text-indigo-600" />
           Node Inspector
         </h3>
-        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-medium capitalize">
+          <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-lg font-medium capitalize">
           {node.type}
         </span>
       </div>
@@ -160,14 +160,14 @@ export function EnhancedNodeInspector({ node, onUpdate, onDelete }: EnhancedNode
         <div className="border-t pt-4 flex gap-2">
           <button
             onClick={handleDuplicate}
-            className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 text-sm font-medium flex items-center justify-center gap-2"
+            className="flex-1 px-3 py-2 bg-indigo-100 text-indigo-700 rounded-xl hover:bg-indigo-200 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
           >
             <Copy className="w-4 h-4" />
             Duplicate
           </button>
           <button
             onClick={() => onDelete?.(node.id)}
-            className="flex-1 px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium flex items-center justify-center gap-2"
+            className="flex-1 px-3 py-2 bg-rose-100 text-rose-700 rounded-xl hover:bg-rose-200 text-sm font-medium flex items-center justify-center gap-2 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
             Delete
