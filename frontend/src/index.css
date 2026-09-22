@@ -45,3 +45,15 @@ code {
 .react-flow__controls-button:hover {
   background: #eef2ff;
 }
+
+@media (max-width: 768px) {
+  .react-flow__controls {
+    transform: scale(0.9);
+    transform-origin: bottom left;
+  }
+
+  .react-flow__minimap {
+    transform: scale(0.85);
+    transform-origin: bottom right;
+  }
+}
