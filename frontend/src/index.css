@@ -45,3 +45,15 @@ code {
 .react-flow__controls-button:hover {
   background: #eef2ff;
 }
+
+.react-flow__minimap {
+  border: 1px solid #c7d2fe;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(30, 41, 59, 0.12);
+}
+
+.react-flow__minimap-mask {
+  fill: rgba(224, 231, 255, 0.72);
+  stroke: #6366f1;
+}
