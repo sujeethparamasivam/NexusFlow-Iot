@@ -54,6 +54,31 @@ NexusFlow/
 
 ## 🚀 Quick Start
 
+## 📤 Graph JSON Export & Import
+
+You can save and reload a visual graph as JSON directly from the frontend canvas.
+
+### Export a graph
+1. Open the graph in the NexusFlow canvas.
+2. Click the "Export JSON" button in the top header.
+3. A JSON file is downloaded to your machine.
+
+### Import a graph
+1. Click the "Import JSON" button in the top header.
+2. Choose a previously exported NexusFlow graph file.
+3. The canvas will replace the current graph with the imported nodes and edges.
+
+### What is preserved
+The exported JSON includes:
+- node IDs, types, labels, and positions
+- node configuration data
+- all edges and connection metadata
+- canvas graph structure needed to restore the visual workflow
+
+The importer validates the file before loading and only accepts supported node types such as datasource, filter, transform, aggregate, and trigger.
+
+> Important: extra custom properties are preserved as part of each node's data/config when they are JSON-compatible, so existing graph configuration is not unnecessarily restricted.
+
 ### Prerequisites
 - Node.js >= 18.0.0
 - MongoDB 5.0+ (or Docker)

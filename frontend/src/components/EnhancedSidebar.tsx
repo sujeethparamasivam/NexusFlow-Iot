@@ -52,13 +52,13 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
   const [activeTab, setActiveTab] = useState<'nodes' | 'tools' | 'help'>('nodes');
 
   return (
-    <aside className="w-72 bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6 overflow-y-auto border-r border-gray-700 flex flex-col">
+    <aside className="w-72 bg-gradient-to-b from-slate-950 to-slate-900 text-white p-6 overflow-y-auto border-r border-slate-700 flex flex-col shadow-xl shadow-slate-900/20">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+        <h2 className="text-xl font-bold bg-gradient-to-r from-sky-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
           NexusFlow
         </h2>
-        <p className="text-xs text-gray-400 mt-1">IoT Rule Engine</p>
+        <p className="text-xs text-slate-400 mt-1">IoT Rule Engine</p>
       </div>
 
       {/* Tabs */}
@@ -69,8 +69,8 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-2 text-sm font-medium transition-colors ${
               activeTab === tab
-                ? 'border-b-2 border-blue-500 text-blue-400'
-                : 'text-gray-400 hover:text-gray-300'
+                ? 'border-b-2 border-indigo-400 text-indigo-300'
+                : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -85,7 +85,7 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
             <button
               key={type}
               onClick={() => onAddNode(type)}
-              className={`w-full px-4 py-3 ${color} hover:opacity-90 rounded-lg text-left transition-all flex items-center gap-3 group`}
+              className={`w-full px-4 py-3 ${color} hover:opacity-90 rounded-xl text-left transition-all duration-200 flex items-center gap-3 group shadow-lg shadow-slate-950/20 ring-1 ring-white/10`}
             >
               <span className="text-xl">{icon}</span>
               <div className="flex-1">
@@ -102,7 +102,7 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
         <div className="space-y-3 flex-1">
           <button
             onClick={onGenerateMockData}
-            className="w-full px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:opacity-90 rounded-lg font-medium transition-all flex items-center gap-2"
+            className="w-full px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-90 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 shadow-lg shadow-emerald-900/20"
           >
             <span>🎯</span>
             Start Backend Simulator
@@ -127,7 +127,7 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
               <li>1. Add nodes from the left panel</li>
               <li>2. Connect nodes by dragging edges</li>
               <li>3. Configure each node</li>
-              <li>4. Click "Activate Rule" to start</li>
+              <li>4. Click &quot;Activate Rule&quot; to start</li>
               <li>5. View live data in dashboard</li>
             </ul>
           </div>
