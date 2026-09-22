@@ -14,8 +14,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
-  color: #333;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 52%, #ecfeff 100%);
+  color: #172033;
 }
 
 code {
@@ -29,4 +29,19 @@ code {
 
 .node-glow {
   box-shadow: 0 0 20px rgba(0, 102, 204, 0.6);
+}
+
+.react-flow__controls {
+  border: 1px solid #c7d2fe;
+  box-shadow: 0 10px 24px rgba(30, 41, 59, 0.12);
+}
+
+.react-flow__controls-button {
+  background: #ffffff;
+  border-bottom-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.react-flow__controls-button:hover {
+  background: #eef2ff;
 }
