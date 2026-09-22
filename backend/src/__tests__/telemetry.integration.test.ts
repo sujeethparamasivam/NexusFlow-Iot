@@ -28,6 +28,21 @@ describe('NexusFlow core flow', () => {
     expect(result.errors).toHaveLength(0);
   });
 
+  it('rejects duplicate node IDs and unsupported node types', () => {
+    const graph = createGraph();
+    graph.nodes[1] = { ...graph.nodes[0], type: 'unknown' as any };
+
+    const result = validateGraph(graph);
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ message: 'Duplicate node id' }),
+        expect.objectContaining({ message: 'Invalid node type: unknown' }),
+      ])
+    );
+  });
+
   it('publishes telemetry into the shared RxJS stream', () => {
     const values: any[] = [];
     const sub = telemetryStream$.subscribe((item) => values.push(item));
