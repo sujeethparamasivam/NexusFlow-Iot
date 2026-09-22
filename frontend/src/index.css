@@ -62,3 +62,26 @@ code {
   stroke-width: 3;
   opacity: 0.9;
 }
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #818cf8 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #818cf8, #14b8a6);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6366f1, #0f766e);
+}
