@@ -45,3 +45,20 @@ code {
 .react-flow__controls-button:hover {
   background: #eef2ff;
 }
+
+.react-flow__node {
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.react-flow__node:hover {
+  filter: saturate(1.12) brightness(1.04);
+}
+
+.react-flow__edge-path {
+  transition: stroke-width 180ms ease, opacity 180ms ease;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 3;
+  opacity: 0.9;
+}
