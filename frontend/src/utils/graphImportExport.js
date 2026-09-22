@@ -27,11 +27,9 @@ export function validateImportedGraph(data) {
                 error: `Node "${nodeId}" has an unsupported type: "${nodeType}".`,
             };
         }
-        const position = nodeRecord.position && typeof nodeRecord.position === 'object'
-            ? nodeRecord.position
-            : null;
+        const position = nodeRecord.position && typeof nodeRecord.position === 'object' ? nodeRecord.position : null;
         const normalizedNode = {
-            ...node,
+            ...nodeRecord,
             id: nodeId,
             type: nodeType,
             position: {
@@ -39,12 +37,16 @@ export function validateImportedGraph(data) {
                 y: Number(position?.y ?? 0),
             },
             data: {
-                ...(typeof node.data === 'object' && node.data ? node.data : {}),
-                label: nodeRecord.label || (typeof node.data === 'object' && node.data && typeof node.data.label === 'string' ? String(node.data.label) : nodeId),
-                config: typeof node.config === 'object' && node.config
-                    ? node.config
-                    : typeof node.data?.config === 'object' && node.data?.config
-                        ? node.data.config
+                ...(typeof nodeRecord.data === 'object' && nodeRecord.data ? nodeRecord.data : {}),
+                label: typeof nodeRecord.label === 'string'
+                    ? nodeRecord.label
+                    : typeof nodeRecord.data === 'object' && nodeRecord.data && typeof nodeRecord.data.label === 'string'
+                        ? String(nodeRecord.data.label)
+                        : nodeId,
+                config: typeof nodeRecord.config === 'object' && nodeRecord.config
+                    ? nodeRecord.config
+                    : typeof nodeRecord.data === 'object' && nodeRecord.data && typeof nodeRecord.data.config === 'object' && nodeRecord.data.config
+                        ? nodeRecord.data.config
                         : {},
             },
         };
@@ -65,7 +67,7 @@ export function validateImportedGraph(data) {
             return { valid: false, error: `Edge at index ${index} is missing a valid target.` };
         }
         normalizedEdges.push({
-            ...edge,
+            ...edgeRecord,
             id: typeof edgeRecord.id === 'string' && edgeRecord.id.trim() ? edgeRecord.id : `edge-${index + 1}`,
             source,
             target,
