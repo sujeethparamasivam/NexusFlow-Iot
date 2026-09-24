@@ -180,7 +180,8 @@ records-per-second throughput. Override the defaults with
 $env:COUNT=5000; $env:CONCURRENCY=100; npm run benchmark
 ```
 
-On the reference environment, this configuration exceeded 5,000 points/sec:
+Try reasonable batch/concurrency combinations when measuring the environment;
+some historical runs exceeded 5,000 points/sec, but this is not guaranteed:
 
 ```bash
 $env:COUNT=5000; $env:CONCURRENCY=20; $env:BATCH_SIZE=250; npm run benchmark

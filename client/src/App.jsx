@@ -160,7 +160,7 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <Sidebar active={active} onSelect={(page) => page === "Alerts" ? openAlerts() : setActive(page)} showNotificationDot={hasUnreadAlerts}/>
+      <Sidebar active={active} onSelect={(page) => page === "Alerts" ? openAlerts() : setActive(page)} showNotificationDot={hasUnreadAlerts} user={user} onLogout={logout}/>
       <main className="main">
         <Topbar theme={theme} onThemeChange={setTheme} connected={connected} simulation={simulation} onSimulation={() => { setSimulationError(""); setSimulation(v => !v); }} onNotifications={openAlerts} showNotificationDot={hasUnreadAlerts} manualTemperature={manualTemperature} onManualTempChange={setManualTemperature} useManualTemp={useManualTemp} onUseManualTempChange={setUseManualTemp}/>
         {active === "Settings" ? (

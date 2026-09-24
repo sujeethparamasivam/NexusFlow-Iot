@@ -96,10 +96,18 @@ const startedAtIso = new Date().toISOString();
 const startedAt = performance.now();
 const memoryBefore = process.memoryUsage().rss;
 let completed = 0;
+let errors = 0;
+const errorMessages = [];
 for (let offset = 0; offset < count; offset += batchSize * concurrency) {
   const batch = Array.from({ length: Math.min(concurrency, Math.ceil((count - offset) / batchSize)) }, (_, index) => ingestBatch(offset + index * batchSize, token));
-  const inserted = await Promise.all(batch);
-  completed += inserted.reduce((sum, value) => sum + value, 0);
+  const results = await Promise.allSettled(batch);
+  results.forEach((result) => {
+    if (result.status === "fulfilled") completed += result.value;
+    else {
+      errors += 1;
+      if (errorMessages.length < 20) errorMessages.push(result.reason?.message || String(result.reason));
+    }
+  });
   if (completed === count || completed % (batchSize * concurrency * 10) === 0) {
     process.stdout.write(`\rCompleted ${completed}/${count}`);
   }
@@ -135,16 +143,21 @@ const result = {
   approximateLogicalBytesPerRecord: completed ? Number((logicalIncrease / completed).toFixed(2)) : 0,
   storageStatus: storageAfter.timeSeries && storageIncrease >= 0 ? "INFO" : "FAIL",
   persistedRecords: storageAfter.persistedRecords,
+  errors,
+  errorMessages,
   targetRecordsPerSecond: target,
+  memoryBeforeMb: Number((memoryBefore / 1024 / 1024).toFixed(2)),
+  memoryAfterMb: Number((memoryAfter / 1024 / 1024).toFixed(2)),
   memoryRssDeltaMb: Number(((memoryAfter - memoryBefore) / 1024 / 1024).toFixed(2)),
   mongodbTimeSeries: storageAfter.timeSeries && storageAfter.persistedRecords === completed,
-  result: completed === count && storageAfter.persistedRecords === completed && throughput >= target ? "PASS" : "FAIL"
+  result: completed === count && errors === 0 && storageAfter.persistedRecords === completed && throughput >= target ? "PASS" : "FAIL"
 };
 await saveReport(result);
 console.log("\nNexusFlow Telemetry Performance Benchmark");
 console.log("-----------------------------------------");
 console.log(`Total records: ${result.totalRecords}`);
 console.log(`Persisted records: ${result.persistedRecords}`);
+console.log(`Errors: ${result.errors}`);
 console.log(`Batch size: ${result.batchSize}`);
 console.log(`Requests: ${result.requests}`);
 console.log(`Concurrency: ${result.concurrency}`);
@@ -156,6 +169,9 @@ console.log(`Storage increase: ${result.storageIncreaseBytes} bytes`);
 console.log(`Approx. bytes/record: ${result.approximateBytesPerRecord} bytes`);
 console.log(`Logical size increase: ${result.logicalSizeIncreaseBytes} bytes`);
 console.log(`Approx. logical bytes/record: ${result.approximateLogicalBytesPerRecord} bytes`);
+console.log(`Memory before: ${result.memoryBeforeMb} MB`);
+console.log(`Memory after: ${result.memoryAfterMb} MB`);
+console.log(`Memory delta: ${result.memoryRssDeltaMb} MB`);
 console.log(`MongoDB Time-Series: ${result.mongodbTimeSeries ? "PASS" : "FAIL"}`);
 console.log(`Target: ${result.targetRecordsPerSecond} records/sec`);
 console.log(`Result: ${result.result}`);

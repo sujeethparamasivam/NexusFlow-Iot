@@ -1,4 +1,4 @@
-import { Activity, BellRing, Bot, Database, GitBranch, Gauge, LayoutDashboard, Settings2, ShieldCheck, Zap } from "lucide-react";
+import { Activity, BellRing, Database, GitBranch, Gauge, LayoutDashboard, LogOut, Settings2, ShieldCheck, Zap } from "lucide-react";
 
 const items = [
   [LayoutDashboard, "Overview"],
@@ -8,7 +8,7 @@ const items = [
   [Database, "Time-Series DB"],
 ];
 
-export default function Sidebar({ active, onSelect, showNotificationDot }) {
+export default function Sidebar({ active, onSelect, showNotificationDot, user, onLogout }) {
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -40,10 +40,11 @@ export default function Sidebar({ active, onSelect, showNotificationDot }) {
         </div>
         <button className={active === "Settings" ? "nav-item active" : "nav-item"} onClick={() => onSelect("Settings")}><Settings2 size={18} /><span>Settings</span></button>
         <div className="profile">
-          <div className="avatar">SM</div>
-          <div><b>System Manager</b><small>Factory Operations</small></div>
+          <div className="avatar">{(user?.name || user?.email || "U").charAt(0).toUpperCase()}</div>
+          <div><b>{user?.name || "System Manager"}</b><small>{user?.email || "Factory Operations"}</small></div>
           <ShieldCheck size={16} />
         </div>
+        <button className="logout-btn" onClick={onLogout}><LogOut size={16}/><span>Sign out</span></button>
       </div>
     </aside>
   );
