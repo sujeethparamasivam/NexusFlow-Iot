@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import http from "http";
 import { config } from "./config.js";
 import { connectDatabase } from "./db.js";
@@ -25,8 +26,8 @@ for (const user of legacyUsers) {
 }
 await seedWorkflow();
 
-const activeWorkflow = await Workflow.findOne({ active: true });
-if (activeWorkflow) {
+const activeWorkflows = await Workflow.find({ active: true });
+for (const activeWorkflow of activeWorkflows) {
   activeWorkflow.nodes = activeWorkflow.nodes.map((node) => {
     if (node.type !== "smsAlert" && node.type !== "action") return node;
     return {
@@ -53,8 +54,10 @@ const { broadcast } = createWebSocketServer(server, {
   }
 });
 const compiler = new StreamCompiler(broadcast);
-const compiledWorkflow = await Workflow.findOne({ active: true }).lean();
-if (compiledWorkflow) compiler.compile({ ...compiledWorkflow, workflowId: compiledWorkflow._id });
+const compiledWorkflows = await Workflow.find({ active: true }).lean();
+for (const compiledWorkflow of compiledWorkflows) {
+  compiler.compile({ ...compiledWorkflow, workflowId: compiledWorkflow._id });
+}
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -67,6 +70,7 @@ app.use(cors({
   },
   credentials: true
 }));
+app.use(helmet());
 app.use(express.json({ limit: "2mb" }));
 app.get("/", (req, res) => res.json({ name: "NexusFlow", status: "online" }));
 app.use("/api/auth", createAuthRoutes());
@@ -76,3 +80,19 @@ server.listen(config.port, () => {
   console.log(`NexusFlow API running on http://localhost:${config.port}`);
   console.log(`WebSocket running on ws://localhost:${config.port}/ws`);
 });
+
+const shutdown = async (signal) => {
+  console.log(`Received ${signal}; shutting down NexusFlow.`);
+  server.close(async () => {
+    try {
+      const { default: mongoose } = await import("mongoose");
+      await mongoose.disconnect();
+    } finally {
+      process.exit(0);
+    }
+  });
+  setTimeout(() => process.exit(1), 10000).unref();
+};
+
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));

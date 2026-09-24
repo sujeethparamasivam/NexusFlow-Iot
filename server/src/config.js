@@ -3,6 +3,10 @@ import { fileURLToPath } from "node:url";
 
 dotenv.config({ path: fileURLToPath(new URL("../.env", import.meta.url)) });
 
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET must be configured in production.");
+}
+
 const defaultClientUrls = ["http://localhost:5173", "http://localhost:5174"];
 const parseClientUrls = () => {
   const configured = String(process.env.CLIENT_URL || "").trim();

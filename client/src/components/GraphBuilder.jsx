@@ -20,13 +20,13 @@ function SensorNode({ data }) {
   return <NodeShell icon={Activity} title={data.label} subtitle="DATA SOURCE" color="blue"><div className="node-body"><span>{data.metric}</span><b>{data.deviceId}</b></div></NodeShell>;
 }
 function AverageNode({ data }) {
-  return <NodeShell icon={Filter} title={data.label} subtitle="MATH OPERATION" color="purple"><div className="node-body"><span>Window</span><b>{data.windowSize} samples</b></div></NodeShell>;
+  return <NodeShell icon={Filter} title={data.label} subtitle="MATH OPERATION" color="purple"><div className="node-body"><span>Window</span><input className="nodrag node-number" type="number" min="1" max="1000" value={data.windowSize || 5} aria-label="Moving average window" onChange={(event) => data.onWindowChange?.(Number(event.target.value))}/><small>samples</small></div></NodeShell>;
 }
 function ThresholdNode({ data }) {
-  return <NodeShell icon={GitBranch} title={data.label} subtitle="RULE" color="amber"><div className="node-body"><span>Alert above</span><b>{data.threshold}°C</b></div></NodeShell>;
+  return <NodeShell icon={GitBranch} title={data.label} subtitle="RULE" color="amber"><div className="node-body"><span>Alert above</span><b>{data.threshold}°C</b><select className="nodrag node-select" value={data.operator || ">"} aria-label="Threshold operator" onChange={(event) => data.onOperatorChange?.(event.target.value)}><option value=">">Greater than</option><option value=">=">At least</option><option value="<">Less than</option><option value="<=">At most</option><option value="=">Equal to</option></select></div></NodeShell>;
 }
 function AlertNode({ data }) {
-  return <NodeShell icon={MessageSquareText} title={data.label} subtitle="ACTION TRIGGER" color="red" />;
+  return <NodeShell icon={MessageSquareText} title={data.label} subtitle="ACTION TRIGGER" color="red"><div className="node-body"><select className="nodrag node-select" value={data.channel || "mock-sms"} aria-label="Alert channel" onChange={(event) => data.onChannelChange?.(event.target.value)}><option value="mock-sms">Mock SMS</option><option value="twilio-sms">Real SMS (Twilio)</option></select><input className="nodrag node-input" type="tel" placeholder="+15551234567" value={data.recipient || ""} aria-label="SMS recipient" onChange={(event) => data.onRecipientChange?.(event.target.value)} /></div></NodeShell>;
 }
 function WebhookNode({ data }) {
   return <NodeShell icon={Link2} title={data.label} subtitle="OUTBOUND ACTION" color="red"><div className="node-body"><span>Endpoint</span><input className="nodrag webhook-input" type="url" placeholder="https://example.test/hook" value={data.url || ""} aria-label="Webhook URL" onChange={(event) => data.onChange?.(event.target.value)}/></div></NodeShell>;
@@ -63,6 +63,14 @@ export default function GraphBuilder({ onCompiled, activeEdgeIds = [] }) {
     setNodes((currentNodes) => currentNodes.map((node) => node.type === "threshold" ? { ...node, data: { ...node.data, threshold: value } } : node));
   }, [setNodes]);
 
+  const updateThresholdOperator = useCallback((value) => {
+    setNodes((currentNodes) => currentNodes.map((node) => node.type === "threshold" ? { ...node, data: { ...node.data, operator: value } } : node));
+  }, [setNodes]);
+
+  const updateAverageWindow = useCallback((value) => {
+    setNodes((currentNodes) => currentNodes.map((node) => node.type === "movingAverage" ? { ...node, data: { ...node.data, windowSize: value } } : node));
+  }, [setNodes]);
+
   const updateWebhook = useCallback((value) => {
     setNodes((currentNodes) => currentNodes.map((node) => node.type === "webhook" ? { ...node, data: { ...node.data, url: value } } : node));
   }, [setNodes]);
@@ -72,7 +80,8 @@ export default function GraphBuilder({ onCompiled, activeEdgeIds = [] }) {
   }, [setNodes]);
 
   const canvasNodes = nodes.map((node) => {
-    if (node.type === "threshold") return { ...node, data: { ...node.data, onChange: updateThreshold } };
+    if (node.type === "threshold") return { ...node, data: { ...node.data, onChange: updateThreshold, onOperatorChange: updateThresholdOperator } };
+    if (node.type === "movingAverage") return { ...node, data: { ...node.data, onWindowChange: updateAverageWindow } };
     if (node.type === "smsAlert") return { ...node, data: { ...node.data, onChannelChange: (value) => updateSms("channel", value), onRecipientChange: (value) => updateSms("recipient", value) } };
     if (node.type === "webhook") return { ...node, data: { ...node.data, onChange: updateWebhook } };
     return node;

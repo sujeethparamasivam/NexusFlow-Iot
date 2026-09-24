@@ -82,8 +82,8 @@ The collection uses:
 ## Authentication
 
 The dashboard now requires an account. Register with `POST /api/auth/register`
-or use the login screen. Registration requires name, email, password, and a
-numeric Telegram Chat ID. Passwords are hashed with bcrypt and sessions use a
+or use the login screen. Registration requires name, email, and a password of
+at least eight characters. Passwords are hashed with bcrypt and sessions use a
 server-signed JWT. Telemetry, workflows, alerts, and stats endpoints require
 the JWT bearer token. The frontend stores only the session token and public user
 profile; provider credentials remain server-side.
@@ -236,3 +236,31 @@ Invoke-RestMethod -Method Post -Uri http://localhost:5000/api/telemetry/ingest `
 The API returns the normal telemetry response. After the alert is persisted,
 the WebSocket alert event includes `notifications.email` and
 `notifications.telegram`, each with `sent`, `skipped`, or `failed` status.
+
+## Canonical implementation and verification
+
+The submission-ready implementation is the `client/` + `server/` pair. The
+older `frontend/` + `backend/` TypeScript/Socket.IO pair is retained as legacy
+source for historical reference and is not used by the root README, local
+startup commands, benchmark, or active API.
+
+Run the active checks:
+
+```bash
+cd server
+npm test
+npm run benchmark
+
+cd ../client
+npm run build
+```
+
+The benchmark writes measured history to
+`server/docs/performance-benchmark.json`. It reports the actual persisted count,
+duration, throughput, memory delta, MongoDB collection sizes, time-series
+metadata check, and PASS/FAIL result. It never fabricates a target result.
+
+The active backend uses Helmet, CORS, JWT authentication, native `ws`, graceful
+SIGINT/SIGTERM shutdown, and MongoDB's native time-series collection. Keep
+`server/.env` and any local credentials out of commits; use
+`server/.env.example` and `client/.env.example` as templates.

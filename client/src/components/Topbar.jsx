@@ -1,6 +1,6 @@
-import { Bell, Wifi } from "lucide-react";
+import { Bell, Palette, Wifi } from "lucide-react";
 
-export default function Topbar({ connected, simulation, onSimulation, onNotifications, showNotificationDot, manualTemperature, onManualTempChange, useManualTemp, onUseManualTempChange }) {
+export default function Topbar({ theme, onThemeChange, connected, simulation, onSimulation, onNotifications, showNotificationDot, manualTemperature, onManualTempChange, useManualTemp, onUseManualTempChange }) {
   return (
     <header className="topbar">
       <div className="breadcrumbs">
@@ -8,6 +8,7 @@ export default function Topbar({ connected, simulation, onSimulation, onNotifica
       </div>
       <div className="top-actions">
         <div className="connection"><span className={connected ? "pulse-dot" : "offline-dot"} /> {connected ? "Live" : "Offline"}</div>
+        <label className="theme-picker"><Palette size={15}/><span>Theme</span><select value={theme} onChange={(event) => onThemeChange(event.target.value)} aria-label="Choose theme"><option value="dark">Night</option><option value="white">White</option><option value="shy-blue">Shy blue</option></select></label>
         <button className="icon-button notification" aria-label="Open notifications" onClick={onNotifications}><Bell size={18}/>{showNotificationDot && <i/>}</button>
                 {simulation && (
                   <div className="manual-temp-control">

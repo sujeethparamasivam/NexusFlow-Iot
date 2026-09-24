@@ -1,7 +1,7 @@
 # NexusFlow Project 1 Compliance Report
 
 ## 1. Visual Graph Builder
-Status: PASS
+Status: ENVIRONMENT-DEPENDENT; latest run FAIL
 Evidence: `client/src/components/GraphBuilder.jsx` uses React Flow node and edge definitions, graph editing, compilation, and threshold configuration.
 
 ## 2. MongoDB Time-Series
@@ -49,17 +49,17 @@ Actual result:
 - Batch size: 1,000
 - Requests: 5
 - Concurrency: 5
-- Duration: 222.16 ms
-- Throughput: 22,506.78 records/sec
+- Duration: 3,393.75 ms
+- Throughput: 1,473.30 records/sec
 - Target: 5,000 records/sec
-- Performance: PASS
+- Performance: FAIL for this run
 - MongoDB Time-Series: PASS
 
 Evidence: `server/scripts/benchmark.js` performs authenticated writes through the real batch ingestion endpoint. Results are recorded in `server/docs/performance-benchmark.json`.
 
 ## 12. Performance Proof
-Status: PASS
-Actual measured throughput: latest `22,506.78 records/sec`; best `22,663.70 records/sec`; average across 7 recorded runs `11,609.37 records/sec`; minimum `1,661.53 records/sec`.
+Status: MEASURED; current environment did not meet the target
+Actual measured throughput: latest `1,473.30 records/sec`; best historical `22,663.70 records/sec`; average across 9 recorded runs `9,254.26 records/sec`; minimum `549.47 records/sec`.
 
 The report preserves historical runs and distinguishes latest, best, average, minimum, maximum, and target values. The slower 100-record and 250-record configurations remain recorded as FAIL results.
 
@@ -93,17 +93,17 @@ The browser verification compiled the workflow and started the real simulation. 
 
 Status: PASS with environment limitation
 
-The root `.gitignore` excludes `.env`, and credentials remain server-side in `server/.env`; no secrets were moved to frontend code or printed by the benchmark. The environment did not have the `git` executable available, so a repository-index check could not be performed.
+The root `.gitignore` excludes `.env` and `.env.*` while allowing `.env.example`; credentials remain server-side in the local ignored `server/.env`. No secrets were moved to frontend code or printed by the benchmark. Rotate configured credentials if this workspace or its history was ever shared.
 
 # Final Result
 
-PROJECT 1 STATUS: READY
+PROJECT 1 STATUS: CORE FEATURES VERIFIED; PERFORMANCE TARGET ENVIRONMENT-DEPENDENT
 
 COMPLETION: 100%
 
-5,000 writes/sec: PASS
+5,000 writes/sec: NOT MET IN LATEST RUN (1,473.30 records/sec)
 
-Best throughput: 22,663.70 records/sec
+Best historical throughput: 22,663.70 records/sec
 
 Latest throughput: 22,506.78 records/sec
 
@@ -123,4 +123,5 @@ Webhook/Mock SMS: PASS for Mock SMS; Webhook implementation verified but externa
 
 Remaining issues:
 
-- The benchmark result is environment-specific; the report preserves slower configurations and does not claim every batch configuration reaches the target.
+- The latest benchmark persisted all records and verified the time-series collection, but did not reach 5,000 records/sec. Throughput varies by MongoDB/network conditions and batch profile.
+- Docker Compose was not executable in this environment because Docker was not installed.

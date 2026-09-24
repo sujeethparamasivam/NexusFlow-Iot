@@ -1,4 +1,7 @@
-# 🎉 NexusFlow Project - COMPLETE & DEPLOYED
+# NexusFlow Project - Historical Deployment Notes
+
+> The canonical implementation is `client/` + `server`. Verify older
+> `frontend/` + `backend/` references below against the root `README.md`.
 
 ## ✅ PROJECT STATUS: PRODUCTION READY
 

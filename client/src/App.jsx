@@ -17,6 +17,7 @@ const initialChart = Array.from({ length: 18 }, (_, i) => ({
 }));
 
 export default function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem("nexusflow_theme") || "dark");
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("nexusflow_user") || "null"));
   const [authLoading, setAuthLoading] = useState(Boolean(localStorage.getItem("nexusflow_token")));
   const [active, setActive] = useState("Overview");
@@ -140,6 +141,11 @@ export default function App() {
     localStorage.setItem("nexusflow_simulation", String(simulation));
   }, [simulation]);
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("nexusflow_theme", theme);
+  }, [theme]);
+
   if (authLoading) return <main className="auth-loading">Loading secure workspace...</main>;
   if (!user) return <Login onAuthenticated={setUser}/>;
 
@@ -156,7 +162,7 @@ export default function App() {
     <div className="app-shell">
       <Sidebar active={active} onSelect={(page) => page === "Alerts" ? openAlerts() : setActive(page)} showNotificationDot={hasUnreadAlerts}/>
       <main className="main">
-        <Topbar connected={connected} simulation={simulation} onSimulation={() => { setSimulationError(""); setSimulation(v => !v); }} onNotifications={openAlerts} showNotificationDot={hasUnreadAlerts} manualTemperature={manualTemperature} onManualTempChange={setManualTemperature} useManualTemp={useManualTemp} onUseManualTempChange={setUseManualTemp}/>
+        <Topbar theme={theme} onThemeChange={setTheme} connected={connected} simulation={simulation} onSimulation={() => { setSimulationError(""); setSimulation(v => !v); }} onNotifications={openAlerts} showNotificationDot={hasUnreadAlerts} manualTemperature={manualTemperature} onManualTempChange={setManualTemperature} useManualTemp={useManualTemp} onUseManualTempChange={setUseManualTemp}/>
         {active === "Settings" ? (
           <NotificationSettings user={user} onUserUpdated={setUser}/>
         ) : active === "Live Telemetry" ? (
