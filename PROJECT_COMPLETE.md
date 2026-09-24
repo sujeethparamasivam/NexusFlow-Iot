@@ -1,7 +1,7 @@
 # NexusFlow - Historical Project Documentation
 
-> This document describes the retained legacy `frontend/` + `backend/` stack.
-> The submission implementation is `client/` + `server`; use the root
+> This is a historical completion report. The submission implementation is
+> `client/` + `server`; use the root
 > `README.md` and `server/docs/project1-compliance.md` for current evidence.
 
 ## ✅ Project Status: FULLY COMPLETE

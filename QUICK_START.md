@@ -1,4 +1,7 @@
-# 🎯 NexusFlow - Quick Start Guide
+# NexusFlow - Historical Quick Start Guide
+
+> Use the root `README.md` for the current `client/` + `server` commands. This
+> document predates the canonical implementation cleanup.
 
 ## 🚀 Getting Started in 5 Minutes
 

@@ -1,7 +1,7 @@
-# NexusFlow Setup Guide (Legacy Reference)
+# NexusFlow Setup Guide (Historical Reference)
 
-> The canonical implementation is `client/` + `server/`. This older guide
-> describes the retained `frontend/` + `backend/` stack. Use the root
+> The canonical implementation is `client/` + `server`. This older guide
+> contains historical setup notes. Use the root
 > `README.md` for current commands.
 
 ## 📋 Prerequisites

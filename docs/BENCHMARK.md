@@ -27,21 +27,21 @@ Date: 2026-09-24
 | Batch size | 1,000 |
 | Concurrency | 5 |
 | Requests | 5 |
-| Duration | 4,528.25 ms |
-| Throughput | 1,104.18 records/sec |
-| Memory before | 85.66 MB |
-| Memory after | 88.53 MB |
-| Memory delta | 2.87 MB |
-| MongoDB storage increase | 0 bytes allocated; 45,196 logical bytes |
-| Approx. logical bytes/record | 9.04 bytes |
+| Duration | 1,311.32 ms |
+| Throughput | 3,812.94 records/sec |
+| Memory before | 84.11 MB |
+| Memory after | 88.87 MB |
+| Memory delta | 4.75 MB |
+| MongoDB storage increase | 0 bytes allocated; 45,729 logical bytes |
+| Approx. logical bytes/record | 9.15 bytes |
 | MongoDB Time-Series | PASS |
 | Result | FAIL against throughput target |
 
-This is an actual measurement from the configured MongoDB environment. The benchmark does not alter the target or fabricate throughput.
+This is an actual measurement from the configured MongoDB environment. The benchmark does not alter the target or fabricate throughput. A prior concurrency-5 run measured 1,104.18 records/sec.
 
 ## Historical Runs
 
-The JSON report preserves up to the most recent 20 runs. Earlier runs include both PASS and FAIL outcomes. The best historical run recorded 22,663.70 records/sec, while the latest run is 1,104.18 records/sec. This variation demonstrates that throughput depends on MongoDB/network conditions and batch/concurrency configuration.
+The JSON report preserves up to the most recent 20 runs. Earlier runs include both PASS and FAIL outcomes. The best historical run recorded 22,663.70 records/sec, while the latest run is 3,812.94 records/sec. This variation demonstrates that throughput depends on MongoDB/network conditions and batch/concurrency configuration.
 
 ## Interpretation
 

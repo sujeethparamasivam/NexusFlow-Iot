@@ -241,9 +241,9 @@ the WebSocket alert event includes `notifications.email` and
 ## Canonical implementation and verification
 
 The submission-ready implementation is the `client/` + `server/` pair. The
-older `frontend/` + `backend/` TypeScript/Socket.IO pair is retained as legacy
-source for historical reference and is not used by the root README, local
-startup commands, benchmark, or active API.
+older duplicate TypeScript/Socket.IO implementation was removed after audit;
+it was not used by the root README, local startup commands, benchmark, or
+active API.
 
 Run the active checks:
 

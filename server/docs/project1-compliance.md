@@ -38,7 +38,7 @@ Evidence: `client/src/App.jsx` consumes WebSocket `pipeline` and `alert` message
 
 ## 10. Webhook / Mock SMS
 Status: PASS
-Evidence: Mock SMS was tested end-to-end and returned `deliveryStatus: delivered`. Webhook validation and HTTP POST dispatch are implemented in `server/src/compiler.js` and `server/src/notifications.js`; an external third-party webhook was not used in this run.
+Evidence: Mock SMS was tested and returned delivered. A local HTTP webhook received JSON and returned HTTP 202. External third-party delivery was not used.
 
 ## 11. 5,000 Writes/sec Benchmark
 Status: PASS
@@ -49,8 +49,8 @@ Actual result:
 - Batch size: 1,000
 - Requests: 5
 - Concurrency: 5
-- Duration: 3,393.75 ms
-- Throughput: 1,473.30 records/sec
+- Duration: 1,311.32 ms
+- Throughput: 3,812.94 records/sec
 - Target: 5,000 records/sec
 - Performance: FAIL for this run
 - MongoDB Time-Series: PASS
@@ -59,7 +59,7 @@ Evidence: `server/scripts/benchmark.js` performs authenticated writes through th
 
 ## 12. Performance Proof
 Status: MEASURED; current environment did not meet the target
-Actual measured throughput: latest `1,473.30 records/sec`; best historical `22,663.70 records/sec`; average across 9 recorded runs `9,254.26 records/sec`; minimum `549.47 records/sec`.
+Actual measured throughput: latest `3,812.94 records/sec`; best historical `22,663.70 records/sec`; average across 12 recorded runs `7,418.75 records/sec`; minimum `549.47 records/sec`.
 
 The report preserves historical runs and distinguishes latest, best, average, minimum, maximum, and target values. The slower 100-record and 250-record configurations remain recorded as FAIL results.
 
@@ -101,7 +101,7 @@ PROJECT 1 STATUS: CORE FEATURES VERIFIED; PERFORMANCE TARGET ENVIRONMENT-DEPENDE
 
 COMPLETION: 100%
 
-5,000 writes/sec: NOT MET IN LATEST RUN (1,473.30 records/sec)
+5,000 writes/sec: NOT MET IN LATEST RUN (3,812.94 records/sec)
 
 Best historical throughput: 22,663.70 records/sec
 
@@ -119,7 +119,7 @@ End-to-end telemetry -> RxJS -> rule -> alert: PASS
 
 Live dashboard: PASS
 
-Webhook/Mock SMS: PASS for Mock SMS; Webhook implementation verified but external delivery not exercised
+Webhook/Mock SMS: PASS for Mock SMS and local webhook delivery; external delivery not exercised
 
 Remaining issues:
 
