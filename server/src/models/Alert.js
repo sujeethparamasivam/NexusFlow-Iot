@@ -7,7 +7,7 @@ const alertSchema = new mongoose.Schema({
   message: String,
   deviceId: String,
   value: Number,
-  channel: { type: String, enum: ["mock-sms", "twilio-sms", "webhook"], default: "mock-sms" },
+  channel: { type: String, enum: ["mock-sms", "webhook"], default: "mock-sms" },
   deliveryStatus: { type: String, enum: ["pending", "delivered", "failed"], default: "pending" },
   deliveredAt: Date,
   deliveryMessage: String

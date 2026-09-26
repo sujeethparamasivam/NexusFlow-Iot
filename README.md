@@ -38,9 +38,6 @@ MONGO_URI=mongodb://127.0.0.1:27017
 DB_NAME=nexusflow
 CLIENT_URL=http://localhost:5173
 JWT_SECRET=replace_with_a_long_random_secret
-TWILIO_ACCOUNT_SID=your_account_sid
-TWILIO_AUTH_TOKEN=your_auth_token
-TWILIO_FROM_NUMBER=your_twilio_phone_number
 EMAIL_USER=your.gmail@gmail.com
 EMAIL_APP_PASSWORD=your_16_character_gmail_app_password
 TELEGRAM_BOT_TOKEN=your_bot_token
@@ -192,20 +189,11 @@ the graph, rejects cycles and disconnected nodes, and executes supported nodes
 in topological order. SMS actions use the built-in mock delivery adapter;
 webhook actions POST the alert payload to the configured node URL.
 
-## Real SMS alerts
+## SMS alerts
 
-NexusFlow supports real SMS delivery through Twilio. Create a Twilio account,
-purchase or verify a Twilio sender number, and add the three `TWILIO_*` values
-to `server/.env`. Never put the auth token in the React app or commit it.
-
-In Graph Builder, set the threshold (for example, `80` °C), add or select the
-SMS Alert node, choose **Real SMS**, enter the recipient as an E.164 number such
-as `+15551234567`, then click **Save & Compile**. When the moving-average value
-crosses the threshold, the backend sends the SMS and records Twilio's delivery
-acceptance status. Without valid Twilio settings, the alert is recorded as
-`failed` instead of silently pretending that a real message was sent.
-Repeated readings are rate-limited by `ALERT_COOLDOWN_MS` (five minutes by
-default) so a sustained breach does not generate a paid SMS for every sample.
+SMS Alert nodes use the built-in mock delivery adapter. The alert is logged and
+persisted without requiring an external SMS provider. Repeated readings are
+rate-limited by `ALERT_COOLDOWN_MS` (five minutes by default).
 
 ## Email and Telegram notifications
 

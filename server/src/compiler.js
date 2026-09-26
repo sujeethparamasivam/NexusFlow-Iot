@@ -77,7 +77,6 @@ export class StreamCompiler {
         if (!Number.isFinite(threshold) || ![">", ">=", "<", "<=", "=", "==", "!="].includes(operator)) throw new Error(`Invalid threshold configuration on node ${node.id}.`);
       }
       if (node.type === "webhook" && !/^https?:\/\//i.test(String(node.data?.url || ""))) throw new Error(`Webhook node ${node.id} requires an HTTP or HTTPS URL.`);
-      if (node.type === "smsAlert" && node.data?.channel === "twilio-sms" && !/^\+[1-9]\d{7,14}$/.test(String(node.data?.recipient || ""))) throw new Error(`Real SMS node ${node.id} requires an E.164 recipient number.`);
     }
 
     let stream = this.telemetry$.pipe(

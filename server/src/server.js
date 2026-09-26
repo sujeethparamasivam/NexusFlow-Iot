@@ -35,8 +35,8 @@ for (const activeWorkflow of activeWorkflows) {
       type: node.type === "action" ? "smsAlert" : node.type,
       data: {
         ...node.data,
-        channel: node.data?.channel === "twilio-sms"
-          ? (/^\+[1-9]\d{7,14}$/.test(String(node.data?.recipient || "")) ? "twilio-sms" : "mock-sms")
+        channel: node.type === "smsAlert" || node.type === "action"
+          ? "mock-sms"
           : (node.data?.channel || "mock-sms"),
         recipient: node.data?.recipient || ""
       }

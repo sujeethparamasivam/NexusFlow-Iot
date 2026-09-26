@@ -26,7 +26,8 @@ function ThresholdNode({ data }) {
   return <NodeShell icon={GitBranch} title={data.label} subtitle="RULE" color="amber"><div className="node-body"><span>Alert above</span><b>{data.threshold}°C</b><select className="nodrag node-select" value={data.operator || ">"} aria-label="Threshold operator" onChange={(event) => data.onOperatorChange?.(event.target.value)}><option value=">">Greater than</option><option value=">=">At least</option><option value="<">Less than</option><option value="<=">At most</option><option value="=">Equal to</option></select></div></NodeShell>;
 }
 function AlertNode({ data }) {
-  return <NodeShell icon={MessageSquareText} title={data.label} subtitle="ACTION TRIGGER" color="red"><div className="node-body"><select className="nodrag node-select" value={data.channel || "mock-sms"} aria-label="Alert channel" onChange={(event) => data.onChannelChange?.(event.target.value)}><option value="mock-sms">Mock SMS</option><option value="twilio-sms">Real SMS (Twilio)</option></select><input className="nodrag node-input" type="tel" placeholder="+15551234567" value={data.recipient || ""} aria-label="SMS recipient" onChange={(event) => data.onRecipientChange?.(event.target.value)} /></div></NodeShell>;
+  return <NodeShell icon={MessageSquareText} title={data.label} subtitle="ACTION TRIGGER" color="red"><div className="node-body"><span>Mock SMS notification</span><input className="nodrag node-input" type="text" placeholder="Recipient label (optional)" value={data.recipient || ""} aria-label="SMS recipient label" onChange={(event) => data.onRecipientChange?.(event.target.value)} /></div></NodeShell>;
+}
 }
 function WebhookNode({ data }) {
   return <NodeShell icon={Link2} title={data.label} subtitle="OUTBOUND ACTION" color="red"><div className="node-body"><span>Endpoint</span><input className="nodrag webhook-input" type="url" placeholder="https://example.test/hook" value={data.url || ""} aria-label="Webhook URL" onChange={(event) => data.onChange?.(event.target.value)}/></div></NodeShell>;
@@ -94,7 +95,7 @@ export default function GraphBuilder({ onCompiled, activeEdgeIds = [] }) {
     const id = `${type}-${Date.now()}`;
     const data = {
       label: type === "sensor" ? "Turbine Sensor" : type === "movingAverage" ? "Moving Average" : type === "threshold" ? "Temperature Rule" : type === "webhook" ? "Webhook Alert" : "SMS Alert",
-      deviceId: "turbine-01", metric: "temperature", windowSize: 5, threshold: alertThreshold, operator: ">", channel: type === "webhook" ? "webhook" : type === "smsAlert" ? "twilio-sms" : "mock-sms", recipient: "", url: ""
+      deviceId: "turbine-01", metric: "temperature", windowSize: 5, threshold: alertThreshold, operator: ">", channel: type === "webhook" ? "webhook" : "mock-sms", recipient: "", url: ""
     };
     setNodes((n) => [...n, { id, type, position, data }]);
   };

@@ -227,10 +227,6 @@ WEBSOCKET_ORIGINS=http://localhost:3000,http://localhost:5173
 JWT_SECRET=your_secret_key_here
 JWT_EXPIRE=7d
 
-# External Services
-TWILIO_ACCOUNT_SID=your_sid
-TWILIO_AUTH_TOKEN=your_token
-TWILIO_PHONE_NUMBER=+1234567890
 ```
 
 ### Frontend .env (optional)

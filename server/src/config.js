@@ -20,11 +20,6 @@ export const config = {
   dbName: process.env.DB_NAME || "nexusflow",
   clientUrls: parseClientUrls(),
   clientUrl: process.env.CLIENT_URL || "http://localhost:5173",
-  twilio: {
-    accountSid: process.env.TWILIO_ACCOUNT_SID,
-    authToken: process.env.TWILIO_AUTH_TOKEN,
-    fromNumber: process.env.TWILIO_FROM_NUMBER
-  },
   alertCooldownMs: Number(process.env.ALERT_COOLDOWN_MS || 10000),
   jwtSecret: process.env.JWT_SECRET || "change-this-development-secret",
   notifications: {
