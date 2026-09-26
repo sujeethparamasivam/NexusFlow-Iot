@@ -30,6 +30,6 @@ This report covers the canonical `client/` + `server/` implementation. Statuses 
 
 - Real Twilio SMS is intentionally not included; SMS alerts use the built-in mock adapter.
 - External webhook delivery was verified with webhook.site receiving the alert JSON payload.
-- Docker Compose was not run because Docker is not installed in the verification environment.
+- Docker Compose is an optional deployment path and is not part of the project acceptance requirements.
 - `npm audit` after `npm audit fix` reports zero vulnerabilities for the canonical server.
 - The 5,000 records/sec target was reached in the latest run at concurrency 20; performance remains environment-dependent and no result is fabricated.

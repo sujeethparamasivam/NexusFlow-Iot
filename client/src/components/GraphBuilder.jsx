@@ -28,7 +28,6 @@ function ThresholdNode({ data }) {
 function AlertNode({ data }) {
   return <NodeShell icon={MessageSquareText} title={data.label} subtitle="ACTION TRIGGER" color="red"><div className="node-body"><span>Mock SMS notification</span><input className="nodrag node-input" type="text" placeholder="Recipient label (optional)" value={data.recipient || ""} aria-label="SMS recipient label" onChange={(event) => data.onRecipientChange?.(event.target.value)} /></div></NodeShell>;
 }
-}
 function WebhookNode({ data }) {
   return <NodeShell icon={Link2} title={data.label} subtitle="OUTBOUND ACTION" color="red"><div className="node-body"><span>Endpoint</span><input className="nodrag webhook-input" type="url" placeholder="https://example.test/hook" value={data.url || ""} aria-label="Webhook URL" onChange={(event) => data.onChange?.(event.target.value)}/></div></NodeShell>;
 }

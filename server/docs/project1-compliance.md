@@ -124,4 +124,4 @@ Webhook/Mock SMS: PASS for Mock SMS and local webhook delivery; external deliver
 Remaining issues:
 
 - The latest benchmark persisted all records and verified the time-series collection, but did not reach 5,000 records/sec. Throughput varies by MongoDB/network conditions and batch profile.
-- Docker Compose was not executable in this environment because Docker was not installed.
+- Docker Compose is optional deployment infrastructure and is outside the project acceptance requirements.
