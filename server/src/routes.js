@@ -33,7 +33,7 @@ export function createRoutes(compiler) {
   };
 
   router.get("/health", (req, res) => {
-    res.json({ ok: true, service: "NexusFlow API", time: new Date().toISOString() });
+    res.json({ status: "ok" });
   });
 
   router.get("/notifications/status", (req, res) => {

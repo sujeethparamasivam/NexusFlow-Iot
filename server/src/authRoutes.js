@@ -30,13 +30,18 @@ export function createAuthRoutes() {
   });
 
   router.post("/login", async (req, res) => {
-    const email = String(req.body.email || "").trim().toLowerCase();
-    const password = String(req.body.password || "");
-    const user = await User.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-      return res.status(401).json({ error: "Invalid email or password" });
+    try {
+      const email = String(req.body.email || "").trim().toLowerCase();
+      const password = String(req.body.password || "");
+      const user = await User.findOne({ email });
+      if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+      res.json({ token: createToken(user), user: publicUser(user) });
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      res.status(500).json({ error: "Could not log in" });
     }
-    res.json({ token: createToken(user), user: publicUser(user) });
   });
 
   router.get("/me", requireAuth, (req, res) => res.json({ user: req.user }));

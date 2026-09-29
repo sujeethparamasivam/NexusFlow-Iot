@@ -59,17 +59,24 @@ for (const compiledWorkflow of compiledWorkflows) {
   compiler.compile({ ...compiledWorkflow, workflowId: compiledWorkflow._id });
 }
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    const allowed = new Set([...config.clientUrls, "http://localhost:5173", "http://localhost:5174"]);
+
+    const allowed = new Set(config.clientUrls);
     if (allowed.has(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
       return callback(null, true);
     }
-    callback(new Error(`Origin ${origin} not allowed by CORS`));
+
+    callback(null, false);
   },
-  credentials: true
-}));
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(express.json({ limit: "2mb" }));
 app.get("/", (req, res) => res.json({ name: "NexusFlow", status: "online" }));

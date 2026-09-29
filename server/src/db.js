@@ -1,7 +1,15 @@
 import mongoose from "mongoose";
 import { config } from "./config.js";
 
+function validateMongoUri(uri) {
+  if (!uri || !/^mongodb(?:\+srv)?:\/\//i.test(uri)) {
+    throw new Error("MONGO_URI must be set to a valid mongodb:// or mongodb+srv:// connection string.");
+  }
+}
+
 export async function connectDatabase() {
+  validateMongoUri(config.mongoUri);
+
   let lastError;
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     try {
@@ -13,9 +21,7 @@ export async function connectDatabase() {
     } catch (error) {
       lastError = error;
       if (attempt === 3) {
-        throw new Error(
-          `MongoDB connection failed after 3 attempts. Check MONGO_URI and whitelist this machine's public IP in MongoDB Atlas. Original error: ${error.message}`
-        );
+        throw new Error("MongoDB connection failed after 3 attempts. Check that MONGO_URI is valid and the database is reachable.");
       }
       console.warn(`MongoDB connection attempt ${attempt} failed; retrying...`);
       await new Promise((resolve) => setTimeout(resolve, 2000));
