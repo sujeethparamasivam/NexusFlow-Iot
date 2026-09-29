@@ -119,7 +119,9 @@ export default function App() {
   useEffect(() => {
     if (!simulation || !user) return undefined;
     const id = setInterval(async () => {
-      const temperature = useManualTemp ? manualTemperature : (71 + Math.sin(Date.now() / 2400) * 8 + Math.random() * 10);
+      const temperature = useManualTemp
+        ? Math.min(150, Math.max(0, Number.isFinite(manualTemperature) ? manualTemperature : 76.4))
+        : (71 + Math.sin(Date.now() / 2400) * 8 + Math.random() * 10);
       try {
         const { data } = await api.post("/telemetry/ingest", { deviceId: "turbine-01", temperature, vibration: 2 + Math.random() * 2, pressure: 108 + Math.random() * 8 });
         setSimulationError("");

@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import { User } from "./models/User.js";
 import { createToken, requireAuth } from "./auth.js";
+import { hasMailExchange } from "./emailValidation.js";
 import { sendUserNotification } from "./services/notificationService.js";
 
 export function createAuthRoutes() {
@@ -15,12 +16,16 @@ export function createAuthRoutes() {
       if (!name || !/^\S+@\S+\.\S+$/.test(email) || password.length < 8) {
         return res.status(400).json({ error: "Name, valid email, and password of at least 8 characters are required" });
       }
+      if (!await hasMailExchange(email)) {
+        return res.status(400).json({ error: "This email domain cannot receive mail. Check the address; Gmail addresses end in gmail.com." });
+      }
       const passwordHash = await bcrypt.hash(password, 12);
       const user = await User.create({ name, email, passwordHash });
       res.status(201).json({ token: createToken(user), user: publicUser(user) });
     } catch (error) {
       const duplicate = error.code === 11000;
-      res.status(duplicate ? 409 : 400).json({ error: duplicate ? "An account with this email already exists" : "Could not create account" });
+      const lookupFailed = error.code === "EMAIL_DOMAIN_LOOKUP_FAILED";
+      res.status(duplicate ? 409 : lookupFailed ? 503 : 400).json({ error: duplicate ? "An account with this email already exists" : lookupFailed ? "Could not verify the email domain. Try again." : "Could not create account" });
     }
   });
 

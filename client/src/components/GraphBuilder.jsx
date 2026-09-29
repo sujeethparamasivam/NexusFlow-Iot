@@ -19,8 +19,13 @@ function NodeShell({ icon: Icon, title, subtitle, color, children }) {
 function SensorNode({ data }) {
   return <NodeShell icon={Activity} title={data.label} subtitle="DATA SOURCE" color="blue"><div className="node-body"><span>{data.metric}</span><b>{data.deviceId}</b></div></NodeShell>;
 }
+
+function clampNumber(value, min, max) {
+  return Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
+}
+
 function AverageNode({ data }) {
-  return <NodeShell icon={Filter} title={data.label} subtitle="MATH OPERATION" color="purple"><div className="node-body"><span>Window</span><input className="nodrag node-number" type="number" min="1" max="1000" value={data.windowSize || 5} aria-label="Moving average window" onChange={(event) => data.onWindowChange?.(Number(event.target.value))}/><small>samples</small></div></NodeShell>;
+  return <NodeShell icon={Filter} title={data.label} subtitle="MATH OPERATION" color="purple"><div className="node-body"><span>Window</span><input className="nodrag node-number" type="number" min="1" max="1000" value={data.windowSize ?? 5} aria-label="Moving average window" onChange={(event) => data.onWindowChange?.(Number(event.target.value))} onBlur={(event) => data.onWindowChange?.(clampNumber(event.currentTarget.valueAsNumber, 1, 1000))}/><small>samples</small></div></NodeShell>;
 }
 function ThresholdNode({ data }) {
   return <NodeShell icon={GitBranch} title={data.label} subtitle="RULE" color="amber"><div className="node-body"><span>Alert above</span><b>{data.threshold}°C</b><select className="nodrag node-select" value={data.operator || ">"} aria-label="Threshold operator" onChange={(event) => data.onOperatorChange?.(event.target.value)}><option value=">">Greater than</option><option value=">=">At least</option><option value="<">Less than</option><option value="<=">At most</option><option value="=">Equal to</option></select></div></NodeShell>;
@@ -133,7 +138,7 @@ export default function GraphBuilder({ onCompiled, activeEdgeIds = [] }) {
           <button draggable onDragStart={(event) => onDragStart(event, "threshold")} onClick={() => addNode("threshold")}><Plus size={15}/> Rule</button>
           <button draggable onDragStart={(event) => onDragStart(event, "smsAlert")} onClick={() => addNode("smsAlert")}><Plus size={15}/> Action</button>
           <button draggable onDragStart={(event) => onDragStart(event, "webhook")} onClick={() => addNode("webhook")}><Plus size={15}/> Webhook</button>
-          <label className="threshold-setting">Alert above <input type="number" min="0" max="200" value={alertThreshold} aria-label="Alert threshold" onChange={(event) => updateThreshold(Number(event.target.value))}/>°C</label>
+          <label className="threshold-setting">Alert above <input type="number" min="0" max="200" value={alertThreshold} aria-label="Alert threshold" onChange={(event) => updateThreshold(Number(event.target.value))} onBlur={(event) => updateThreshold(clampNumber(event.currentTarget.valueAsNumber, 0, 200))}/>°C</label>
           <button className="compile-btn" onClick={compile} disabled={saving}><Play size={15}/>{saving ? "Compiling..." : "Save & Compile"}</button>
         </div>
       </div>

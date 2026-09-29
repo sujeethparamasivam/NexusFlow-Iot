@@ -1,5 +1,9 @@
 import { Bell, Palette, Wifi } from "lucide-react";
 
+function clampTemperature(value, fallback) {
+  return Math.min(150, Math.max(0, Number.isFinite(value) ? value : fallback));
+}
+
 export default function Topbar({ theme, onThemeChange, connected, simulation, onSimulation, onNotifications, showNotificationDot, manualTemperature, onManualTempChange, useManualTemp, onUseManualTempChange }) {
   return (
     <header className="topbar">
@@ -16,7 +20,7 @@ export default function Topbar({ theme, onThemeChange, connected, simulation, on
                       <input type="checkbox" checked={useManualTemp} onChange={(e) => onUseManualTempChange(e.target.checked)} />
                       <span>Manual °C</span>
                     </label>
-                    <input type="number" className="temp-input" value={manualTemperature} onChange={(e) => onManualTempChange(Number(e.target.value))} min="0" max="150" step="0.1" placeholder="Temperature" />
+                    <input type="number" className="temp-input" value={manualTemperature} onChange={(e) => onManualTempChange(Number(e.target.value))} onBlur={(e) => onManualTempChange(clampTemperature(e.currentTarget.valueAsNumber, manualTemperature))} min="0" max="150" step="0.1" placeholder="Temperature" />
                   </div>
                 )}
         <button className={simulation ? "simulation running" : "simulation"} onClick={onSimulation}>
