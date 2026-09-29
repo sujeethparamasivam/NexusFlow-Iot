@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: nexusflow-api
+    runtime: node
+    plan: free
+    branch: main
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_NAME
+        value: nexusflow
+      - key: CLIENT_URL
+        value: https://nexusflow-client.onrender.com
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+
+  - type: static
+    name: nexusflow-client
+    plan: free
+    branch: main
+    rootDir: client
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://nexusflow-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

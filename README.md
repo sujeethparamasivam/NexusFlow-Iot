@@ -59,6 +59,18 @@ npm run dev
 Open:
 http://localhost:5173
 
+## Deploy to Render
+
+1. Push this repository to GitHub and choose **New > Blueprint** in Render.
+2. Connect the repository and deploy the `render.yaml` Blueprint.
+3. When prompted, set `MONGO_URI` on `nexusflow-api` to your MongoDB Atlas connection string. The Blueprint generates `JWT_SECRET` automatically.
+4. In MongoDB Atlas, allow network access from Render so the API can connect.
+
+The Blueprint creates the API at `https://nexusflow-api.onrender.com` and the
+frontend at `https://nexusflow-client.onrender.com`. The frontend's API URL and
+the API's CORS origin are configured in the Blueprint. Do not commit `.env` or
+put database credentials in `render.yaml`; use Render's environment settings.
+
 ## MongoDB Time-Series
 On server startup NexusFlow creates a native MongoDB Time-Series collection named `telemetry` if it does not already exist.
 
