@@ -60,6 +60,20 @@ function App() {
     setNodes((nds) => [...nds, newNode]);
   };
 
+  const handleClearCanvas = () => {
+    if (isRuleActive || (nodes.length === 0 && edges.length === 0)) {
+      return;
+    }
+    if (!window.confirm('Clear all nodes and connections? This cannot be undone.')) {
+      return;
+    }
+
+    setNodes([]);
+    setEdges([]);
+    setSelectedNode(null);
+    setSavedGraphId(null);
+  };
+
   const handleSaveGraph = async () => {
     const graphData = {
       name: `Rule-${Date.now()}`,
@@ -236,7 +250,12 @@ function App() {
 
   return (
     <div className="flex w-full h-screen bg-gray-50">
-      <EnhancedSidebar onAddNode={handleAddNode} onGenerateMockData={handleGenerateMockData} />
+      <EnhancedSidebar
+        onAddNode={handleAddNode}
+        onGenerateMockData={handleGenerateMockData}
+        onClearCanvas={handleClearCanvas}
+        ruleActive={isRuleActive}
+      />
       
       <div className="flex-1 flex flex-col">
         {/* Header */}
