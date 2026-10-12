@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface NodeTypes {
   [key: string]: {
@@ -46,11 +46,9 @@ const nodeTypes: NodeTypes = {
 interface EnhancedSidebarProps {
   onAddNode: (type: string) => void;
   onGenerateMockData: () => void;
-  onClearCanvas: () => void;
-  ruleActive: boolean;
 }
 
-export function EnhancedSidebar({ onAddNode, onGenerateMockData, onClearCanvas, ruleActive }: EnhancedSidebarProps) {
+export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSidebarProps) {
   const [activeTab, setActiveTab] = useState<'nodes' | 'tools' | 'help'>('nodes');
 
   return (
@@ -109,20 +107,12 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData, onClearCanvas, 
             <span>🎯</span>
             Start Backend Simulator
           </button>
-          <button
-            onClick={onClearCanvas}
-            disabled={ruleActive}
-            title={ruleActive ? 'Stop the active rule before clearing the canvas' : 'Remove all nodes and connections'}
-            className="w-full px-4 py-3 bg-rose-950/60 border border-rose-800 text-rose-100 hover:bg-rose-900 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <Trash2 className="w-4 h-4" />
-            Clear canvas
-          </button>
           <div className="bg-gray-700 p-3 rounded-lg">
             <p className="text-xs text-gray-300">
               <strong>Tools:</strong>
               <br />• Save graph as JSON
               <br />• Load from JSON
+              <br />• Clear canvas
               <br />• Export config
             </p>
           </div>

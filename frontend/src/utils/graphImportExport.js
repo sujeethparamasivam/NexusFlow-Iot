@@ -52,6 +52,7 @@ export function validateImportedGraph(data) {
         };
         normalizedNodes.push(normalizedNode);
     }
+    const nodeIds = new Set(normalizedNodes.map((node) => node.id));
     const normalizedEdges = [];
     for (const [index, edge] of graph.edges.entries()) {
         if (!edge || typeof edge !== 'object') {
@@ -65,6 +66,12 @@ export function validateImportedGraph(data) {
         }
         if (!target) {
             return { valid: false, error: `Edge at index ${index} is missing a valid target.` };
+        }
+        if (!nodeIds.has(source)) {
+            return { valid: false, error: `Edge at index ${index} references a missing source node: "${source}".` };
+        }
+        if (!nodeIds.has(target)) {
+            return { valid: false, error: `Edge at index ${index} references a missing target node: "${target}".` };
         }
         normalizedEdges.push({
             ...edgeRecord,
