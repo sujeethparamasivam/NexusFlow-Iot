@@ -161,10 +161,11 @@ export function EnhancedDashboard() {
 
       {/* Charts */}
       <div className="bg-white/90 rounded-2xl border border-slate-200 p-4 shadow-lg shadow-slate-200/60 backdrop-blur-sm">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:justify-between sm:items-center">
           <h3 className="font-bold text-lg">Live Telemetry</h3>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <select
+              aria-label="Filter telemetry by device"
               value={selectedDevice}
               onChange={(e) => setSelectedDevice(e.target.value)}
               className="px-3 py-1 border border-indigo-200 bg-indigo-50/60 text-indigo-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
@@ -174,11 +175,12 @@ export function EnhancedDashboard() {
               <option value="turbine-02">Turbine 02</option>
               <option value="pump-01">Pump 01</option>
             </select>
-            <div className="flex gap-1 border border-indigo-100 bg-slate-100 rounded-lg p-1">
+            <div role="group" aria-label="Chart type" className="flex gap-1 border border-indigo-100 bg-slate-100 rounded-lg p-1">
               {(['line', 'area', 'bar'] as const).map((type) => (
                 <button
                   key={type}
                   onClick={() => setChartType(type)}
+                  aria-pressed={chartType === type}
                   className={`px-3 py-1 text-sm rounded capitalize ${
                     chartType === type
                       ? 'bg-indigo-600 text-white shadow-sm'
