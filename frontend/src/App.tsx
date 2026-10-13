@@ -235,12 +235,12 @@ function App() {
   };
 
   return (
-    <div className="flex w-full h-screen bg-gray-50">
+    <div className="flex min-h-screen w-full flex-col bg-gray-50 lg:h-screen lg:flex-row">
       <EnhancedSidebar onAddNode={handleAddNode} onGenerateMockData={handleGenerateMockData} />
       
-      <div className="flex-1 flex flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Header */}
-        <header className="bg-gradient-to-r from-sky-700 via-indigo-700 to-violet-700 text-white px-6 py-4 flex justify-between items-center shadow-lg shadow-indigo-900/20 border-b border-white/10">
+        <header className="bg-gradient-to-r from-sky-700 via-indigo-700 to-violet-700 text-white px-6 py-4 flex flex-col gap-4 shadow-lg shadow-indigo-900/20 border-b border-white/10 sm:flex-row sm:justify-between sm:items-center">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">NexusFlow</h1>
             <p className="text-sm text-indigo-100">Visual IoT Telemetry & Rule Engine</p>
@@ -295,9 +295,9 @@ function App() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 flex gap-4 p-4 overflow-auto">
+        <div className="flex flex-1 flex-col gap-4 p-4 overflow-auto xl:flex-row">
           {/* Canvas */}
-          <div className="flex-1 bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-inner shadow-slate-200/60">
+          <div className="min-h-[55vh] flex-1 bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-inner shadow-slate-200/60 xl:min-h-0">
             <ReactFlow
               nodes={nodes.map((node) => ({
                 ...node,
@@ -319,7 +319,7 @@ function App() {
           </div>
 
           {/* Right Sidebar */}
-          <div className={`${selectedNode ? 'w-1/2 min-w-0' : 'flex-1'} flex gap-4`}>
+          <div className={`${selectedNode ? 'xl:w-1/2' : 'flex-1'} flex min-w-0 flex-col gap-4 md:flex-row xl:min-h-0`}>
             {selectedNode && (
               <div className="flex-1 min-w-0">
                 <EnhancedNodeInspector

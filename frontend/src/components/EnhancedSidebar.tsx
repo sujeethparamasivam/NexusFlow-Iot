@@ -52,7 +52,7 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
   const [activeTab, setActiveTab] = useState<'nodes' | 'tools' | 'help'>('nodes');
 
   return (
-    <aside className="w-72 bg-gradient-to-b from-slate-950 to-slate-900 text-white p-6 overflow-y-auto border-r border-slate-700 flex flex-col shadow-xl shadow-slate-900/20">
+    <aside className="w-full shrink-0 bg-gradient-to-b from-slate-950 to-slate-900 text-white p-4 overflow-y-auto border-b border-slate-700 flex flex-col shadow-xl shadow-slate-900/20 sm:p-6 lg:w-72 lg:border-b-0 lg:border-r">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-bold bg-gradient-to-r from-sky-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
