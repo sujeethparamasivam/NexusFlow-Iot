@@ -66,13 +66,13 @@ export function EnhancedNodeInspector({ node, onUpdate, onDelete }: EnhancedNode
   };
 
   return (
-    <div className="bg-white/95 rounded-2xl border border-indigo-100 p-8 shadow-lg shadow-indigo-100/60">
+    <div className="rounded-2xl border border-indigo-100/80 bg-white/95 p-6 shadow-xl shadow-indigo-950/[0.04] sm:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-bold text-2xl flex items-center gap-3">
+        <h3 className="font-bold tracking-tight text-2xl text-slate-900 flex items-center gap-3">
           <Settings className="w-6 h-6 text-indigo-600" />
           Node Inspector
         </h3>
-          <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-lg font-medium capitalize">
+          <span className="bg-indigo-50 text-indigo-700 text-xs px-3 py-1.5 rounded-full font-semibold capitalize ring-1 ring-inset ring-indigo-200">
           {node.type}
         </span>
       </div>
@@ -85,7 +85,7 @@ export function EnhancedNodeInspector({ node, onUpdate, onDelete }: EnhancedNode
             type="text"
             value={node.id}
             disabled
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-sm font-mono"
+            className="w-full px-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-sm font-mono text-slate-500"
           />
         </div>
 
@@ -103,7 +103,7 @@ export function EnhancedNodeInspector({ node, onUpdate, onDelete }: EnhancedNode
                 });
               }
             }}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm transition-colors focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
           />
         </div>
 
@@ -133,7 +133,7 @@ export function EnhancedNodeInspector({ node, onUpdate, onDelete }: EnhancedNode
                     <select
                       value={config[field.key] || ''}
                       onChange={(e) => handleConfigChange(field.key, e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                      className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm transition-colors focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
                     >
                       <option value="">Select...</option>
                       {field.options?.map((opt) => (
@@ -147,7 +147,7 @@ export function EnhancedNodeInspector({ node, onUpdate, onDelete }: EnhancedNode
                       type={field.type}
                       value={config[field.key] || ''}
                       onChange={(e) => handleConfigChange(field.key, e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                      className="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm transition-colors focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
                     />
                   )}
                 </div>
