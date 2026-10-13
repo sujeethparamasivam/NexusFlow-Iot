@@ -240,22 +240,22 @@ function App() {
       
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-gradient-to-r from-sky-700 via-indigo-700 to-violet-700 text-white px-6 py-4 flex justify-between items-center shadow-lg shadow-indigo-900/20 border-b border-white/10">
+        <header className="bg-gradient-to-r from-slate-950 via-indigo-950 to-indigo-800 text-white px-6 py-4 flex justify-between items-center shadow-xl shadow-indigo-950/20 border-b border-white/10">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">NexusFlow</h1>
-            <p className="text-sm text-indigo-100">Visual IoT Telemetry & Rule Engine</p>
+            <p className="text-sm text-indigo-100/90 mt-1">Visual IoT Telemetry &amp; Rule Engine</p>
           </div>
           <div className="flex gap-3 flex-wrap items-center">
             <button
               onClick={handleExportGraph}
-              className="px-4 py-2 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 font-medium transition-all duration-200 shadow-sm flex items-center gap-2"
+              className="px-4 py-2 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 hover:border-white/40 font-medium transition-all duration-200 shadow-sm flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
               Export JSON
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-4 py-2 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 font-medium transition-all duration-200 shadow-sm flex items-center gap-2"
+              className="px-4 py-2 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 hover:border-white/40 font-medium transition-all duration-200 shadow-sm flex items-center gap-2"
             >
               <Upload className="w-4 h-4" />
               Import JSON
@@ -269,7 +269,7 @@ function App() {
             />
             <button
               onClick={handleSaveGraph}
-              className="px-4 py-2 bg-white text-indigo-700 rounded-xl hover:bg-indigo-50 font-semibold transition-all duration-200 shadow-sm flex items-center gap-2"
+              className="px-4 py-2 bg-white text-indigo-800 rounded-xl hover:bg-indigo-50 font-semibold transition-all duration-200 shadow-md shadow-indigo-950/15 flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
               Save Graph
