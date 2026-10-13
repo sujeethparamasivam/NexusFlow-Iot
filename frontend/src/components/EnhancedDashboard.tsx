@@ -243,7 +243,7 @@ export function EnhancedDashboard() {
           <AlertCircle className="w-5 h-5 text-red-600" />
           Recent Alerts
         </h3>
-        <div className="space-y-2 max-h-40 overflow-y-auto">
+        <div role="log" aria-label="Recent alerts" aria-live="polite" className="space-y-2 max-h-40 overflow-y-auto">
           {alerts.length > 0 ? (
             alerts.map((alert) => (
               <div
@@ -256,10 +256,13 @@ export function EnhancedDashboard() {
                     : 'bg-cyan-50 border-cyan-400'
                 }`}
               >
-                <p className="font-medium">{alert.message}</p>
+                <p className="font-medium">
+                  <span className="sr-only">{alert.severity} alert: </span>
+                  {alert.message}
+                </p>
                 <p className="text-xs text-gray-600 mt-1">
                   {alert.timestamp.toLocaleTimeString()}
-                  {alert.value && ` • Value: ${alert.value.toFixed(1)}`}
+                  {alert.value !== undefined && ` • Value: ${alert.value.toFixed(1)}`}
                 </p>
               </div>
             ))
