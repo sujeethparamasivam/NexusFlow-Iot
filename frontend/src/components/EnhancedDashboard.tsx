@@ -280,26 +280,26 @@ interface StatCardProps {
 
 function StatCard({ icon, label, value, unit, color }: StatCardProps) {
   const bgColors = {
-    blue: 'bg-indigo-50 border-indigo-200',
-    green: 'bg-teal-50 border-teal-200',
-    orange: 'bg-amber-50 border-amber-200',
-    red: 'bg-rose-50 border-rose-200',
+    blue: 'bg-gradient-to-br from-indigo-50 to-white border-indigo-100',
+    green: 'bg-gradient-to-br from-emerald-50 to-white border-emerald-100',
+    orange: 'bg-gradient-to-br from-amber-50 to-white border-amber-100',
+    red: 'bg-gradient-to-br from-rose-50 to-white border-rose-100',
   };
 
   const textColors = {
-    blue: 'text-indigo-600',
-    green: 'text-teal-600',
-    orange: 'text-amber-600',
-    red: 'text-rose-600',
+    blue: 'text-indigo-600 bg-indigo-100/80',
+    green: 'text-emerald-700 bg-emerald-100/80',
+    orange: 'text-amber-700 bg-amber-100/80',
+    red: 'text-rose-700 bg-rose-100/80',
   };
 
   return (
-    <div className={`${bgColors[color]} border rounded-2xl p-3 shadow-sm`}>
-      <div className={`flex items-center justify-between ${textColors[color]}`}>
+    <div className={`${bgColors[color]} border rounded-2xl p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md`}>
+      <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${textColors[color]}`}>
         {icon}
       </div>
-      <p className="text-xs text-gray-600 mt-2">{label}</p>
-      <p className="text-lg font-bold text-gray-900">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mt-3">{label}</p>
+      <p className="text-xl font-bold tracking-tight text-slate-900">
         {value}
         {unit && <span className="text-sm text-gray-600 ml-1">{unit}</span>}
       </p>
