@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ReactFlow, Background, Controls, MiniMap, addEdge, Handle, Position, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Activity, Filter, GitBranch, Link2, MessageSquareText, Plus, Play } from "lucide-react";
+import { Activity, Download, Filter, GitBranch, Link2, MessageSquareText, Plus, Play, Upload } from "lucide-react";
 import { defaultEdges, defaultNodes } from "../data/defaultGraph";
 import { api } from "../api";
+import { validateImportedGraph } from "../utils/graphImportExport";
 
 function NodeShell({ icon: Icon, title, subtitle, color, children }) {
   return (
@@ -46,6 +47,7 @@ export default function GraphBuilder({ onCompiled, activeEdgeIds = [] }) {
   const [saving, setSaving] = useState(false);
   const [workflowId, setWorkflowId] = useState(null);
   const [alertThreshold, setAlertThreshold] = useState(75);
+  const importInputRef = useRef(null);
   const { screenToFlowPosition } = useReactFlow();
 
   useEffect(() => {
@@ -116,6 +118,56 @@ export default function GraphBuilder({ onCompiled, activeEdgeIds = [] }) {
     event.dataTransfer.effectAllowed = "move";
   };
 
+  const exportGraph = () => {
+    try {
+      const graph = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        nodes,
+        edges
+      };
+      const blobUrl = URL.createObjectURL(new Blob([JSON.stringify(graph, null, 2)], { type: "application/json" }));
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `nexusflow-graph-${Date.now()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 0);
+      setStatus("Exported");
+    } catch (error) {
+      setStatus(error instanceof Error ? `Export failed: ${error.message}` : "Export failed.");
+    }
+  };
+
+  const importGraph = async (event) => {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+      const parsed = JSON.parse(await file.text());
+      const result = validateImportedGraph(parsed);
+      if (!result.valid) {
+        setStatus(result.error);
+        return;
+      }
+
+      setNodes(result.nodes);
+      setEdges(result.edges);
+      const thresholdNode = result.nodes.find((node) => node.type === "threshold");
+      if (thresholdNode) {
+        setAlertThreshold(clampNumber(Number(thresholdNode.data.threshold), 0, 200));
+      }
+      setWorkflowId(null);
+      setStatus("Imported - save to persist");
+    } catch (error) {
+      setStatus(error instanceof SyntaxError ? "Import failed: the file is not valid JSON." : "Import failed: unable to read the selected file.");
+    } finally {
+      input.value = "";
+    }
+  };
+
   const compile = async () => {
     setSaving(true);
     try {
@@ -138,6 +190,9 @@ export default function GraphBuilder({ onCompiled, activeEdgeIds = [] }) {
           <button draggable onDragStart={(event) => onDragStart(event, "threshold")} onClick={() => addNode("threshold")}><Plus size={15}/> Rule</button>
           <button draggable onDragStart={(event) => onDragStart(event, "smsAlert")} onClick={() => addNode("smsAlert")}><Plus size={15}/> Action</button>
           <button draggable onDragStart={(event) => onDragStart(event, "webhook")} onClick={() => addNode("webhook")}><Plus size={15}/> Webhook</button>
+          <button type="button" onClick={exportGraph} aria-label="Export graph as JSON"><Download size={15}/> Export</button>
+          <button type="button" onClick={() => importInputRef.current?.click()} aria-label="Import graph from JSON"><Upload size={15}/> Import</button>
+          <input ref={importInputRef} className="graph-import-input" type="file" accept="application/json,.json" onChange={importGraph} aria-label="Choose graph JSON file"/>
           <label className="threshold-setting">Alert above <input type="number" min="0" max="200" value={alertThreshold} aria-label="Alert threshold" onChange={(event) => updateThreshold(Number(event.target.value))} onBlur={(event) => updateThreshold(clampNumber(event.currentTarget.valueAsNumber, 0, 200))}/>°C</label>
           <button className="compile-btn" onClick={compile} disabled={saving}><Play size={15}/>{saving ? "Compiling..." : "Save & Compile"}</button>
         </div>

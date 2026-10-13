@@ -9,6 +9,24 @@ Currently, endpoints are not authenticated. JWT will be added in v1.1.
 
 ---
 
+## Health API
+
+### Check Service Health
+```http
+GET /health
+```
+
+This endpoint is available at `/api/health` and returns the service status.
+
+**Response**: 200 OK
+```json
+{
+  "status": "ok"
+}
+```
+
+---
+
 ## Graphs API
 
 ### List All Graphs
