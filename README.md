@@ -1,241 +1,267 @@
-# NexusFlow - Visual IoT Telemetry & Rule Engine
+# NexusFlow — Visual IoT Telemetry & Rule Engine
 
-> A MERN-based IoT telemetry platform with a visual rule engine for real-time data processing
+NexusFlow is Project 1 from the Infotact Solutions Advanced MERN Stack Engineering document.
 
-## 🎯 Project Overview
+## Required technology implemented
+- Frontend: React + React Flow
+- Backend: Node.js + Express
+- Stream compiler: RxJS
+- Database: MongoDB 5.0+ Time-Series collection
+- Real-time transport: WebSockets (`ws`)
+- Live dashboard: Recharts
+- API client: Axios
+- UI: premium responsive dark enterprise interface
 
-NexusFlow allows factory floor managers and IoT engineers to:
-- **Visually design** complex data pipelines using a drag-and-drop canvas (React Flow)
-- **Process high-frequency telemetry** with optimized MongoDB Time-Series collections
-- **Execute dynamic rules** in real-time on incoming sensor data using RxJS streams
-- **Get instant alerts** via WebSocket when anomalies are detected
+## Core flow
+Turbine Sensor → Moving Average Filter → Threshold Rule → SMS Alert
 
-## 📁 Project Structure
+The backend accepts telemetry, stores it in MongoDB Time-Series storage, pushes the value over WebSocket, and evaluates the saved React Flow graph through an RxJS pipeline. When the rule is true, a mock SMS alert is emitted.
 
-```
-NexusFlow/
-├── backend/                # Node.js + Express + MongoDB backend
-│   ├── src/
-│   │   ├── index.ts       # Main server entry point
-│   │   ├── config/        # Database, logger config
-│   │   ├── models/        # Mongoose schemas (Graph, Telemetry)
-│   │   ├── routes/        # API endpoints
-│   │   ├── compiler/      # RxJS graph compiler
-│   │   ├── websocket/     # Socket.IO setup
-│   │   ├── services/      # Business logic
-│   │   └── middleware/    # Express middleware
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .env.example
-│
-├── frontend/              # React + Vite + React Flow frontend
-│   ├── src/
-│   │   ├── main.tsx       # React entry point
-│   │   ├── App.tsx        # Main component
-│   │   ├── components/    # React components
-│   │   ├── pages/         # Page components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── services/      # API clients
-│   │   ├── store/         # Zustand stores
-│   │   └── utils/         # Utility functions
-│   ├── index.html
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
-│   └── package.json
-│
-├── docs/                  # Documentation
-│   ├── ARCHITECTURE.md    # System design
-│   ├── API_REFERENCE.md   # API documentation
-│   └── SETUP_GUIDE.md     # Setup instructions
-│
-├── docker-compose.yml     # Docker Compose configuration
-└── README.md             # This file
-```
+## Requirements
+- Node.js 20+
+- MongoDB 5.0+
+- npm
 
-## 🚀 Quick Start
+## Setup
 
-### Prerequisites
-- Node.js >= 18.0.0
-- MongoDB 5.0+ (or Docker)
-- npm or yarn
-
-### Setup Backend
-
+### 1. Backend
 ```bash
-cd backend
+cd server
 npm install
-cp .env.example .env
+copy .env.example .env
+```
+
+Edit `.env`:
+```env
+PORT=5000
+MONGO_URI=mongodb://127.0.0.1:27017
+DB_NAME=nexusflow
+CLIENT_URL=http://localhost:5173
+JWT_SECRET=replace_with_a_long_random_secret
+EMAIL_USER=your.gmail@gmail.com
+EMAIL_APP_PASSWORD=your_16_character_gmail_app_password
+TELEGRAM_BOT_TOKEN=your_bot_token
+```
+
+Start:
+```bash
 npm run dev
 ```
 
-The backend will start on `http://localhost:5000`
-
-### Setup Frontend
-
+### 2. Frontend
+Open another terminal:
 ```bash
-cd frontend
+cd client
 npm install
 npm run dev
 ```
 
-The frontend will start on `http://localhost:5173`
+Open:
+http://localhost:5173
 
-### Setup with Docker
+## Deploy to Render
 
-```bash
-docker-compose up -d
-```
+1. Push this repository to GitHub and choose **New > Blueprint** in Render.
+2. Connect the repository and deploy the `render.yaml` Blueprint.
+3. When prompted, set `MONGO_URI` on `nexusflow-api` to your MongoDB Atlas connection string. The Blueprint generates `JWT_SECRET` automatically.
+4. In MongoDB Atlas, allow network access from Render so the API can connect.
 
-This will start MongoDB, backend, and frontend containers.
+The Blueprint creates the API at `https://nexusflow-api.onrender.com` and the
+frontend at `https://nexusflow-client.onrender.com`. The frontend's API URL and
+the API's CORS origin are configured in the Blueprint. Do not commit `.env` or
+put database credentials in `render.yaml`; use Render's environment settings.
 
-## 📚 API Reference
+## MongoDB Time-Series
+On server startup NexusFlow creates a native MongoDB Time-Series collection named `telemetry` if it does not already exist.
 
-### Graphs API
-- `GET /api/graphs` - List all graphs
-- `GET /api/graphs/:id` - Get graph by ID
-- `POST /api/graphs` - Create new graph
-- `PUT /api/graphs/:id` - Update graph
-- `DELETE /api/graphs/:id` - Delete graph
+The collection uses:
+- timeField: `timestamp`
+- metaField: `meta`
+- granularity: `seconds`
 
-### Telemetry API
-- `POST /api/telemetry/ingest` - Ingest single telemetry point
-- `POST /api/telemetry/batch` - Batch ingest telemetry
-- `GET /api/telemetry/:deviceId` - Query telemetry data
+## Demo
+1. Create an account or sign in.
+2. The default workflow is already loaded.
+3. Click **Start Simulation**.
+4. Watch the live telemetry chart and graph status.
+5. Use **Graph Builder** to edit the rule.
+6. Click **Save & Compile**.
+7. Trigger test telemetry from the Dashboard.
 
-### Rules API
-- `POST /api/rules/:graphId/activate` - Activate rule
-- `POST /api/rules/:graphId/deactivate` - Deactivate rule
+## Authentication
 
-## 🏗️ Development Roadmap
+The dashboard now requires an account. Register with `POST /api/auth/register`
+or use the login screen. Registration requires name, email, and a password of
+at least eight characters. Passwords are hashed with bcrypt and sessions use a
+server-signed JWT. Telemetry, workflows, alerts, and stats endpoints require
+the JWT bearer token. The frontend stores only the session token and public user
+profile; provider credentials remain server-side.
 
-### Week 1: Foundation
-- [x] Time-Series Setup: MongoDB Time-Series collections
-- [x] Express ingestion endpoints
-- [x] React app + React Flow canvas scaffolding
+Users can later update their Telegram destination with
+`PUT /api/auth/notifications` using `{ "telegramChatId": "..." }`. Email
+notifications always use the authenticated user's registered `email` field.
+After configuring the provider credentials, test both channels with
+`POST /api/auth/notifications/test` using the logged-in user's bearer token.
 
-### Week 2: Core Logic
-- [ ] Stream Compiler: Parse React Flow JSON → RxJS Observables
-- [ ] Custom node library (Data Sources, Operations, Triggers)
-- [ ] Graph serialization/deserialization
+## API
+- `GET /api/health`
+- `GET /api/telemetry/latest`
+- `POST /api/telemetry/ingest`
+- `GET /api/workflows`
+- `POST /api/workflows`
+- `POST /api/workflows/compile`
+- `GET /api/alerts`
+- `GET /api/stats`
+- `GET /api/notifications/status`
 
-### Week 3: Live Execution
-- [ ] WebSocket telemetry ingestion
-- [ ] Dynamic rule execution on data streams
-- [ ] Live Recharts dashboard
+## WebSocket
+Connect to:
+`ws://localhost:5000/ws?token=<JWT>`
 
-### Week 4: Polish & Integration
-- [ ] Webhook/external API triggers
-- [ ] Visual feedback (glowing wires)
-- [ ] Error handling & logging
-
-## 🔧 Key Technologies
-
-| Layer | Stack |
-|-------|-------|
-| **Frontend** | React 18, React Flow, Recharts, Tailwind CSS, Zustand, Socket.IO |
-| **Backend** | Node.js, Express, Socket.IO, RxJS, TypeScript |
-| **Database** | MongoDB 5.0+ (Time-Series collections) |
-| **DevTools** | Vite, TypeScript, ESLint, Nodemon |
-
-## 🔌 WebSocket Events
-
-### Client → Server
-- `subscribe:telemetry` - Subscribe to device telemetry
-- `subscribe:graph` - Subscribe to graph updates
-- `emit:telemetry` - Emit telemetry data
-- `emit:alert` - Emit alert/trigger
-
-### Server → Client
-- `telemetry:update` - New telemetry data
-- `alert:triggered` - Alert triggered
-- `graph:updated` - Graph changes
-
-## 📝 Example: Create & Execute a Rule
-
-1. **Create a graph** (POST /api/graphs):
+Authenticated WebSocket clients can send telemetry:
 ```json
 {
-  "name": "Temperature Alert",
-  "description": "Alert when temp > 80°C",
-  "nodes": [
-    { "id": "1", "type": "datasource", "label": "Temperature Sensor" },
-    { "id": "2", "type": "filter", "label": "> 80°C" },
-    { "id": "3", "type": "trigger", "label": "SMS Alert" }
-  ],
-  "edges": [
-    { "id": "e1-2", "source": "1", "target": "2" },
-    { "id": "e2-3", "source": "2", "target": "3" }
-  ]
+  "type": "telemetry",
+  "data": { "deviceId": "turbine-01", "temperature": 84.2, "vibration": 0.42, "pressure": 12.5 }
 }
 ```
+The server validates, stores, compiles, and broadcasts the resulting pipeline/alert events.
 
-2. **Activate the rule** (POST /api/rules/{graphId}/activate):
+Telemetry messages:
 ```json
 {
-  "graphId": "66c1a2b3c4d5e6f7g8h9i0j1"
-}
-```
-
-3. **Ingest telemetry** (POST /api/telemetry/ingest):
-```json
-{
-  "deviceId": "turbine-01",
-  "deviceName": "Main Turbine",
-  "value": 85,
-  "unit": "°C"
-}
-```
-
-4. **Get alert** (via WebSocket):
-```json
-{
-  "event": "alert:triggered",
+  "type": "telemetry",
   "data": {
-    "graphId": "66c1a2b3c4d5e6f7g8h9i0j1",
-    "message": "Temperature exceeded threshold",
-    "severity": "error"
+    "deviceId": "turbine-01",
+    "temperature": 84.2,
+    "vibration": 4.8,
+    "pressure": 112.4
   }
 }
 ```
 
-## 🧪 Testing
+Alert messages:
+```json
+{
+  "type": "alert",
+  "data": {
+    "severity": "critical",
+    "message": "Temperature threshold exceeded"
+  }
+}
+```
 
-### Backend
+## Project mapping to the PDF
+Week 1:
+- Time-Series setup
+- Express ingestion endpoints
+- React Flow canvas
+
+Week 2:
+- RxJS graph compiler
+- Data Source / Math / Action node library
+- Graph JSON serialization
+
+Week 3:
+- Live RxJS rule execution
+- Recharts live dashboard
+- WebSocket telemetry
+
+Week 4:
+- Mock webhook/SMS alerting
+- Animated graph activity and premium UI polish
+
+## Performance benchmark
+
+With the backend running, measure the real batch ingestion route with 5,000 telemetry points:
+
 ```bash
-cd backend
+cd server
+npm run benchmark
+```
+
+The benchmark creates a synthetic test account and authenticates to the protected
+batch endpoint; it never disables production authentication. It reports measured
+records-per-second throughput. Override the defaults with
+`COUNT`, `CONCURRENCY`, or `API_URL`, for example:
+
+```bash
+$env:COUNT=5000; $env:CONCURRENCY=100; npm run benchmark
+```
+
+Try reasonable batch/concurrency combinations when measuring the environment;
+some historical runs exceeded 5,000 points/sec, but this is not guaranteed:
+
+```bash
+$env:COUNT=5000; $env:CONCURRENCY=20; $env:BATCH_SIZE=250; npm run benchmark
+```
+
+Workflows are persisted when **Save & Compile** is used. The compiler validates
+the graph, rejects cycles and disconnected nodes, and executes supported nodes
+in topological order. SMS actions use the built-in mock delivery adapter;
+webhook actions POST the alert payload to the configured node URL.
+
+## SMS alerts
+
+SMS Alert nodes use the built-in mock delivery adapter. The alert is logged and
+persisted without requiring an external SMS provider. Repeated readings are
+rate-limited by `ALERT_COOLDOWN_MS` (five minutes by default).
+
+## Email and Telegram notifications
+
+Critical threshold alerts are persisted first, then the backend attempts both
+email and Telegram delivery. A failure in either provider is logged without
+failing telemetry ingestion or alert persistence. Missing provider settings are
+reported as `skipped`.
+
+Email uses Nodemailer with Gmail SMTP. Enable 2-Step Verification on the Gmail
+account, create an App Password under Google Account security, and use that
+16-character value as `EMAIL_APP_PASSWORD`; do not use the normal Gmail password.
+
+Create a Telegram bot by messaging `@BotFather` in Telegram, using `/newbot`,
+and store the token as `TELEGRAM_BOT_TOKEN`. Each user stores their own Chat ID
+in MongoDB. To find a user's Chat ID, send a
+message to the bot, then open:
+`https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
+and copy the `message.chat.id` value. The bot must be able to receive messages
+in that chat.
+
+Test the integration by starting the backend and posting telemetry:
+
+```powershell
+Invoke-RestMethod -Method Post -Uri http://localhost:5000/api/telemetry/ingest `
+  -ContentType 'application/json' `
+  -Body '{"deviceId":"turbine-01","temperature":120,"vibration":3,"pressure":112}'
+```
+
+The API returns the normal telemetry response. After the alert is persisted,
+the WebSocket alert event includes `notifications.email` and
+`notifications.telegram`, each with `sent`, `skipped`, or `failed` status.
+
+## Canonical implementation and verification
+
+The submission-ready implementation is the `client/` + `server/` pair. The
+older duplicate TypeScript/Socket.IO implementation was removed after audit;
+it was not used by the root README, local startup commands, benchmark, or
+active API.
+
+Run the active checks:
+
+```bash
+cd server
 npm test
-npm run lint
-```
+npm run benchmark
 
-### Frontend
-```bash
-cd frontend
+cd ../client
 npm run build
-npm run type-check
 ```
 
-## 📖 Documentation
+The benchmark writes measured history to
+`server/docs/performance-benchmark.json`. It reports the actual persisted count,
+duration, throughput, memory delta, MongoDB collection sizes, time-series
+metadata check, and PASS/FAIL result. It never fabricates a target result.
 
-See detailed documentation in the `docs/` folder:
-- [Architecture](docs/ARCHITECTURE.md)
-- [API Reference](docs/API_REFERENCE.md)
-- [Setup Guide](docs/SETUP_GUIDE.md)
-
-## 🤝 Contributing
-
-1. Create a feature branch (`git checkout -b feature/amazing-feature`)
-2. Commit changes (`git commit -m 'Add amazing feature'`)
-3. Push to branch (`git push origin feature/amazing-feature`)
-4. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 👨‍💻 Author
-
-**Your Name** - Internship Project @ [Company]
-
----
-
-**Happy Building! 🚀**
+The active backend uses Helmet, CORS, JWT authentication, native `ws`, graceful
+SIGINT/SIGTERM shutdown, and MongoDB's native time-series collection. Keep
+`server/.env` and any local credentials out of commits; use
+`server/.env.example` and `client/.env.example` as templates.

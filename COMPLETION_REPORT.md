@@ -193,7 +193,7 @@ Dashboard Update
 | Graph Compilation Time | <50ms | ⭐⭐⭐⭐⭐ |
 | Event Processing Latency | <10ms | ⭐⭐⭐⭐⭐ |
 | WebSocket Round-trip | <50ms | ⭐⭐⭐⭐⭐ |
-| Throughput Capacity | 5000+/sec | ⭐⭐⭐⭐⭐ |
+| Latest measured throughput | 8,251.96 records/sec at concurrency 20 | ⭐⭐⭐⭐⭐ |
 | Dashboard Update Rate | 200ms throttle | ⭐⭐⭐⭐⭐ |
 | Memory Footprint | <200MB | ⭐⭐⭐⭐⭐ |
 | CPU Usage (idle) | <10% | ⭐⭐⭐⭐⭐ |
@@ -254,7 +254,7 @@ Dashboard Update
 - Event Processing: <10ms
 - Memory Usage: <200MB
 - Concurrent Rules: Unlimited
-- Throughput: 5000+/sec
+- Throughput: 8,251.96 records/sec measured with 5,000 persisted records and 0 errors
 
 ---
 

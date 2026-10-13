@@ -1,0 +1,105 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import http from "http";
+import { config } from "./config.js";
+import { connectDatabase } from "./db.js";
+import { createWebSocketServer } from "./ws.js";
+import { createRoutes } from "./routes.js";
+import { StreamCompiler } from "./compiler.js";
+import { seedWorkflow } from "./seed.js";
+import { Workflow } from "./models/Workflow.js";
+import { createAuthRoutes } from "./authRoutes.js";
+import { User } from "./models/User.js";
+import { telemetryCollection } from "./db.js";
+
+await connectDatabase();
+const legacyUsers = await User.collection.find({
+  telegramChatId: { $exists: false },
+  "notifications.telegramChatId": { $exists: true }
+}).toArray();
+for (const user of legacyUsers) {
+  await User.collection.updateOne(
+    { _id: user._id },
+    { $set: { telegramChatId: user.notifications.telegramChatId }, $unset: { notifications: "" } }
+  );
+}
+await seedWorkflow();
+
+const activeWorkflows = await Workflow.find({ active: true });
+for (const activeWorkflow of activeWorkflows) {
+  activeWorkflow.nodes = activeWorkflow.nodes.map((node) => {
+    if (node.type !== "smsAlert" && node.type !== "action") return node;
+    return {
+      ...node.toObject(),
+      type: node.type === "action" ? "smsAlert" : node.type,
+      data: {
+        ...node.data,
+        channel: node.type === "smsAlert" || node.type === "action"
+          ? "mock-sms"
+          : (node.data?.channel || "mock-sms"),
+        recipient: node.data?.recipient || ""
+      }
+    };
+  });
+  await activeWorkflow.save();
+}
+
+const app = express();
+const server = http.createServer(app);
+const { broadcast } = createWebSocketServer(server, {
+  onTelemetry: async (packet, user) => {
+    await telemetryCollection().insertOne(packet);
+    compiler.push(packet, user);
+  }
+});
+const compiler = new StreamCompiler(broadcast);
+const compiledWorkflows = await Workflow.find({ active: true }).lean();
+for (const compiledWorkflow of compiledWorkflows) {
+  compiler.compile({ ...compiledWorkflow, workflowId: compiledWorkflow._id });
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    const allowed = new Set(config.clientUrls);
+    if (allowed.has(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
+      return callback(null, true);
+    }
+
+    callback(null, false);
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.use(helmet());
+app.use(express.json({ limit: "2mb" }));
+app.get("/", (req, res) => res.json({ name: "NexusFlow", status: "online" }));
+app.use("/api/auth", createAuthRoutes());
+app.use("/api", createRoutes(compiler));
+
+server.listen(config.port, () => {
+  console.log(`NexusFlow API running on http://localhost:${config.port}`);
+  console.log(`WebSocket running on ws://localhost:${config.port}/ws`);
+});
+
+const shutdown = async (signal) => {
+  console.log(`Received ${signal}; shutting down NexusFlow.`);
+  server.close(async () => {
+    try {
+      const { default: mongoose } = await import("mongoose");
+      await mongoose.disconnect();
+    } finally {
+      process.exit(0);
+    }
+  });
+  setTimeout(() => process.exit(1), 10000).unref();
+};
+
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));

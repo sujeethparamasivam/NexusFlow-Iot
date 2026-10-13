@@ -1,4 +1,8 @@
-# NexusFlow Setup Guide
+# NexusFlow Setup Guide (Historical Reference)
+
+> The canonical implementation is `client/` + `server`. This older guide
+> contains historical setup notes. Use the root
+> `README.md` for current commands.
 
 ## 📋 Prerequisites
 
@@ -223,10 +227,6 @@ WEBSOCKET_ORIGINS=http://localhost:3000,http://localhost:5173
 JWT_SECRET=your_secret_key_here
 JWT_EXPIRE=7d
 
-# External Services
-TWILIO_ACCOUNT_SID=your_sid
-TWILIO_AUTH_TOKEN=your_token
-TWILIO_PHONE_NUMBER=+1234567890
 ```
 
 ### Frontend .env (optional)

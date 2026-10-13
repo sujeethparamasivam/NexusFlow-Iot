@@ -138,7 +138,7 @@
   - [ ] Webhook management
 
 - [ ] External Services
-  - [ ] SMS/Email alerts (Twilio)
+  - [ ] SMS/Email alerts
   - [ ] API trigger nodes
   - [ ] Database write nodes
 
