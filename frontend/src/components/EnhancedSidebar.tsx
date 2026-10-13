@@ -54,8 +54,8 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
   return (
     <aside className="w-72 bg-gradient-to-b from-slate-950 to-slate-900 text-white p-6 overflow-y-auto border-r border-slate-700 flex flex-col shadow-xl shadow-slate-900/20">
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-xl font-bold bg-gradient-to-r from-sky-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
+      <div className="mb-6 border-b border-white/10 pb-5">
+        <h2 className="text-xl font-bold tracking-tight bg-gradient-to-r from-sky-300 via-indigo-300 to-violet-300 bg-clip-text text-transparent">
           NexusFlow
         </h2>
         <p className="text-xs text-slate-400 mt-1">IoT Rule Engine</p>
@@ -85,14 +85,14 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
             <button
               key={type}
               onClick={() => onAddNode(type)}
-              className={`w-full px-4 py-3 ${color} hover:opacity-90 rounded-xl text-left transition-all duration-200 flex items-center gap-3 group shadow-lg shadow-slate-950/20 ring-1 ring-white/10`}
+              className={`w-full px-4 py-3 ${color} hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 focus-visible:ring-2 focus-visible:ring-white/80 rounded-xl text-left transition-all duration-200 flex items-center gap-3 group shadow-lg shadow-slate-950/20 ring-1 ring-white/10`}
             >
               <span className="text-xl">{icon}</span>
               <div className="flex-1">
                 <p className="font-medium text-white capitalize">{type}</p>
                 <p className="text-xs text-white text-opacity-80">{description}</p>
               </div>
-              <Plus className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Plus className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" />
             </button>
           ))}
         </div>
