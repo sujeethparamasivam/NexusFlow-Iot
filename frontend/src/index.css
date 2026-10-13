@@ -35,6 +35,29 @@ code {
     monospace;
 }
 
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+input:not(:disabled),
+select {
+  color: var(--color-ink);
+}
+
+input::placeholder {
+  color: #94a3b8;
+}
+
 .reactflow__edge.animated {
   animation: glow 2s ease-in-out infinite;
 }
