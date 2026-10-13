@@ -81,6 +81,17 @@ input::placeholder {
   background: #eef2ff;
 }
 
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #e2e8f0;
+}
+
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  border: 1px solid #e0e7ff !important;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(30, 41, 59, 0.12);
+}
+
 button:focus-visible,
 select:focus-visible,
 input:focus-visible {
