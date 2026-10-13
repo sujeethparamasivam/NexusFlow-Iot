@@ -160,29 +160,29 @@ export function EnhancedDashboard() {
       </div>
 
       {/* Charts */}
-      <div className="bg-white/90 rounded-2xl border border-slate-200 p-4 shadow-lg shadow-slate-200/60 backdrop-blur-sm">
+      <div className="rounded-2xl border border-indigo-100/80 bg-white/95 p-5 shadow-xl shadow-indigo-950/[0.04] backdrop-blur-sm">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-lg">Live Telemetry</h3>
+          <h3 className="font-bold tracking-tight text-lg text-slate-900">Live Telemetry</h3>
           <div className="flex gap-2">
             <select
               value={selectedDevice}
               onChange={(e) => setSelectedDevice(e.target.value)}
-              className="px-3 py-1 border border-indigo-200 bg-indigo-50/60 text-indigo-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="px-3 py-2 border border-slate-200 bg-slate-50 text-slate-800 rounded-xl text-sm transition-colors hover:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-300"
             >
               <option value="all">All Devices</option>
               <option value="turbine-01">Turbine 01</option>
               <option value="turbine-02">Turbine 02</option>
               <option value="pump-01">Pump 01</option>
             </select>
-            <div className="flex gap-1 border border-indigo-100 bg-slate-100 rounded-lg p-1">
+            <div className="flex gap-1 border border-slate-200/80 bg-slate-100/80 rounded-xl p-1">
               {(['line', 'area', 'bar'] as const).map((type) => (
                 <button
                   key={type}
                   onClick={() => setChartType(type)}
                   className={`px-3 py-1 text-sm rounded capitalize ${
                     chartType === type
-                      ? 'bg-indigo-600 text-white shadow-sm'
-                      : 'bg-transparent text-slate-600 hover:bg-white'
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-900/20'
+                        : 'bg-transparent text-slate-600 hover:bg-white hover:text-indigo-700'
                   }`}
                 >
                   {type}
