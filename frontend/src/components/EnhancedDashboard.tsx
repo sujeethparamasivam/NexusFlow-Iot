@@ -236,9 +236,11 @@ export function EnhancedDashboard() {
       </div>
 
       {/* Alerts */}
-      <div className="bg-white/90 rounded-2xl border border-slate-200 p-4 shadow-lg shadow-slate-200/60 backdrop-blur-sm">
-        <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 text-red-600" />
+      <div className="rounded-2xl border border-slate-200/80 bg-white/95 p-5 shadow-xl shadow-indigo-950/[0.04] backdrop-blur-sm">
+        <h3 className="font-bold tracking-tight text-lg text-slate-900 mb-4 flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-100 text-rose-600">
+            <AlertCircle className="w-4 h-4" />
+          </span>
           Recent Alerts
         </h3>
         <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -246,7 +248,7 @@ export function EnhancedDashboard() {
             alerts.map((alert) => (
               <div
                 key={alert.id}
-                className={`p-3 rounded-lg text-sm border-l-4 ${
+                className={`p-3.5 rounded-xl text-sm border-l-4 shadow-sm ${
                   alert.severity === 'error'
                     ? 'bg-rose-50 border-rose-400'
                     : alert.severity === 'warning'
@@ -255,14 +257,14 @@ export function EnhancedDashboard() {
                 }`}
               >
                 <p className="font-medium">{alert.message}</p>
-                <p className="text-xs text-gray-600 mt-1">
+                <p className="text-xs font-medium text-slate-500 mt-1.5">
                   {alert.timestamp.toLocaleTimeString()}
                   {alert.value && ` • Value: ${alert.value.toFixed(1)}`}
                 </p>
               </div>
             ))
           ) : (
-            <p className="text-gray-500 text-center py-4">No alerts</p>
+            <p className="text-slate-500 text-center py-6 text-sm">No alerts to display</p>
           )}
         </div>
       </div>
