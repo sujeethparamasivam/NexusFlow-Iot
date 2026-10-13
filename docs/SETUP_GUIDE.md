@@ -21,11 +21,15 @@
 
 ## 🛠️ Installation Steps
 
-### Step 1: Clone/Initialize Project
+### Step 1: Open the Project Root
 
+If you have not cloned the repository yet:
 ```bash
-cd D:\inntership\Neuxflow
+git clone https://github.com/sujeethparamasivam/NexusFlow-Iot.git
+cd NexusFlow-Iot
 ```
+
+For an existing checkout, open its root directory (the folder containing `backend`, `frontend`, and `docker-compose.yml`). Run the remaining commands from that directory unless a step says otherwise.
 
 ### Step 2: Backend Setup
 
@@ -131,9 +135,6 @@ npm run dev
 ### Steps
 
 ```bash
-# Navigate to project root
-cd D:\inntership\Neuxflow
-
 # Build and start containers
 docker-compose up -d
 
