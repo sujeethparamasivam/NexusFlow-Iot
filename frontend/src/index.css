@@ -16,6 +16,32 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 52%, #ecfeff 100%);
   color: #172033;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: #c7d2fe;
+  color: #1e1b4b;
+}
+
+:focus-visible {
+  outline: 3px solid #0f766e;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 code {
