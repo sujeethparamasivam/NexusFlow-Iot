@@ -312,7 +312,7 @@ function App() {
               onNodeClick={(_event, node) => setSelectedNode(node)}
               onPaneClick={() => setSelectedNode(null)}
             >
-              <Background color="#aaa" gap={16} />
+              <Background color="#cbd5e1" gap={20} size={1.2} />
               <Controls />
               <MiniMap />
             </ReactFlow>
