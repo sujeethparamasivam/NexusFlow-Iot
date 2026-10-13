@@ -67,6 +67,7 @@ export function EnhancedSidebar({ onAddNode, onGenerateMockData }: EnhancedSideb
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
+            aria-pressed={activeTab === tab}
             className={`px-3 py-2 text-sm font-medium transition-colors ${
               activeTab === tab
                 ? 'border-b-2 border-indigo-400 text-indigo-300'
